@@ -304,7 +304,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
     </div>
     <button class="month-btn" onclick="changeMonth(1)">›</button>
   </div>
-  <button class="save-btn" id="saveBtn" onclick="saveSnap()">저장</button>
+  <span style="width:26px;"></span>
 </div>
 
 <div class="content">
@@ -826,9 +826,7 @@ function renderAll(){
   const ym=S.currentMonth,isNow=ym===todayYM();
   document.getElementById('monthLabel').textContent=mLabel(ym);
   document.getElementById('monthNow').textContent=isNow?'현재':'';
-  const saved=S.history[ym];
-  const sb=document.getElementById('saveBtn');
-  sb.textContent=saved?'저장됨':'저장';sb.className='save-btn'+(saved?' saved':'');
+  // (저장 버튼 제거됨 — 월별 자동 보존)
   const c=calc(ym);
 
   // Balance input + override
@@ -966,23 +964,27 @@ function renderSemi(m){
 
 function renderHistory(){
   const hl=document.getElementById('historyList');hl.innerHTML='';
-  const entries=Object.entries(S.history).sort((a,b)=>b[0].localeCompare(a[0]));
-  if(!entries.length){hl.innerHTML='<div class="hist-empty">저장된 기록이 없어요.</div>';return;}
-  const maxA=Math.max(...entries.map(([,v])=>Math.abs(v.netAsset||v.closingBalance||0)||1));
-  entries.forEach(([ym,snap])=>{
-    const val=snap.netAsset!=null?snap.netAsset:(snap.closingBalance||0);
+  // 월별 데이터에서 자동 집계 (수입 또는 항목 있는 월만 표시)
+  const months=Object.keys(S.months).filter(ym=>{
+    const m=S.months[ym];
+    return (m.income||0)>0 || (m.transferItems&&m.transferItems.length) || (m.cardItems&&m.cardItems.length);
+  }).sort((a,b)=>b.localeCompare(a));
+  if(!months.length){hl.innerHTML='<div class="hist-empty">아직 입력한 월이 없어요.<br>홈/이체/카드 탭에서 데이터를 입력하면<br>여기에 자동으로 기록됩니다.</div>';return;}
+  const computed=months.map(ym=>({ym,...calc(ym)}));
+  const maxA=Math.max(...computed.map(c=>Math.abs(c.netAsset||c.closingBalance||0)||1));
+  computed.forEach(c=>{
+    const val=c.netAsset;
     const pct=Math.max(0,Math.abs(val)/maxA*100);
     const div=document.createElement('div');div.className='hist-item';
-    div.onclick=()=>{S.currentMonth=ym;renderAll();switchTab('home',document.querySelector('[data-tab="home"]'));};
+    div.onclick=()=>{S.currentMonth=c.ym;renderAll();switchTab('home',document.querySelector('[data-tab="home"]'));};
     div.innerHTML=`<div class="hist-top">
-      <span class="hist-month">${ym.replace('-','.')}</span>
+      <span class="hist-month">${c.ym.replace('-','.')}</span>
       <span class="hist-avail ${val>=0?'pos':'neg'}">${fmt(val)}</span>
-      <button class="hist-del" onclick="event.stopPropagation();delHist('${ym}')">×</button>
     </div>
     <div class="hist-row2">
       <div class="hist-bar-wrap"><div class="hist-bar" style="width:${pct}%;background:${val>=0?'var(--green)':'var(--red)'}"></div></div>
-      <span class="hist-card-amt">카드사용 ${fmtPlain(snap.cardUsedThis||0)}</span>
-      <span class="hist-spendable">마감 ${fmtPlain(snap.closingBalance||0)}</span>
+      <span class="hist-card-amt">카드사용 ${fmtPlain(c.cardUsedThis||0)}</span>
+      <span class="hist-spendable">마감 ${fmtPlain(c.closingBalance||0)}</span>
     </div>`;
     hl.appendChild(div);
   });
