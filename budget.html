@@ -576,6 +576,10 @@ service cloud.firestore {
     </div>
 
     <div class="settings-section">
+      <button class="btn-secondary" style="width:100%;background:var(--blue-d);border-color:rgba(96,128,240,0.3);color:var(--blue);" onclick="forceRefresh()">🔄 최신 버전 받기 <span id="appVerLabel" style="font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:4px;"></span></button>
+      <div class="settings-help">앱이 최신이 아닐 때 누르면 캐시 비우고 새로 받아와요.</div>
+    </div>
+    <div class="settings-section">
       <div style="display:flex;gap:7px;">
         <button class="btn-secondary" style="flex:1" onclick="exportData()">데이터 내보내기</button>
         <button class="btn-secondary" style="flex:1" onclick="document.getElementById('importFile').click()">데이터 가져오기</button>
@@ -655,6 +659,9 @@ service cloud.firestore {
 //     안전잔액 = 마감 (이번달 결제일까지 안전)
 // R5. 카드 한도(정확) = 수입 − 이번달 이체 − 이번달 결제 − 다음달 이체 예상
 // ════════════════════════════════════════════════════════════
+
+// 앱 버전 (sw.js의 CACHE 값과 일치시킬 것)
+const APP_VERSION='v5.5';
 
 // ── UTILS ──
 const TD=new Date();
@@ -867,6 +874,7 @@ function renderAll(){
   const ym=S.currentMonth,isNow=ym===todayYM();
   document.getElementById('monthLabel').textContent=mLabel(ym);
   document.getElementById('monthNow').textContent=isNow?'현재':'';
+  const verLbl=document.getElementById('appVerLabel');if(verLbl)verLbl.textContent=APP_VERSION;
   // (저장 버튼 제거됨 — 월별 자동 보존)
   const c=calc(ym);
 
@@ -1148,6 +1156,24 @@ function resetAll(){
   if(!confirm('모든 데이터를 정말 지울까요? 되돌릴 수 없습니다.'))return;
   if(!confirm('한 번 더 확인합니다. 진행할까요?'))return;
   S=freshState();sv();renderAll();toast('초기화 완료');
+}
+
+// 캐시 비우고 강제 새로고침
+async function forceRefresh(){
+  try{
+    toast('새 버전 받는 중…');
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister()));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+  }catch(e){console.warn(e);}
+  // 쿼리스트링 추가해서 브라우저 캐시도 우회
+  const url=location.origin+location.pathname+'?v='+Date.now();
+  location.replace(url);
 }
 
 // ── TOGGLE ──
