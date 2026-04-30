@@ -483,6 +483,58 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
       <div class="settings-help">이 월·잔액부터 모든 월의 이월 잔액이 자동 계산됩니다.</div>
     </div>
     <div class="settings-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:11px;color:var(--text);font-weight:500;">☁ 클라우드 동기화</span>
+        <span style="display:flex;align-items:center;gap:5px;">
+          <span id="syncDot" style="width:6px;height:6px;border-radius:50%;background:#35354a;display:inline-block;"></span>
+          <span id="syncTip" style="font-size:9px;color:var(--muted);"></span>
+        </span>
+      </div>
+
+      <div id="syncNoConfig">
+        <div class="settings-help" style="padding-top:0;">
+          여러 기기에서 가계부를 공유하려면 Firebase 무료 플랜을 1회 설정해야 해요.
+          <a href="#" onclick="document.getElementById('fbHelp').style.display='block';return false;" style="color:var(--blue);">설정 방법 보기</a>
+        </div>
+        <div id="fbHelp" style="display:none;font-size:10px;color:var(--muted);line-height:1.7;background:var(--s2);padding:10px 12px;border-radius:9px;margin-bottom:8px;">
+          1. <a href="https://console.firebase.google.com/" target="_blank" style="color:var(--blue);">Firebase Console</a>에서 프로젝트 생성<br>
+          2. Build → Authentication → Sign-in method → <b>Google</b> 활성화<br>
+          3. Build → Firestore Database → 프로덕션 모드 → 위치 선택 → 만들기<br>
+          4. Firestore의 Rules 탭에 아래 규칙 붙여넣기:
+          <pre style="background:var(--s3);padding:7px;border-radius:6px;font-size:9px;margin:4px 0;overflow-x:auto;">rules_version='2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    match /budgets/{uid} {
+      allow read,write: if request.auth.uid == uid;
+    }
+  }
+}</pre>
+          5. 프로젝트 설정(⚙) → 일반 → "내 앱"에서 <b>웹 앱(&lt;/&gt;)</b> 추가 → 닉네임 입력<br>
+          6. 표시되는 <code style="background:var(--s3);padding:1px 4px;border-radius:3px;">firebaseConfig = {...}</code> 객체를 통째로 복사<br>
+          7. 인증 → Settings → 승인된 도메인에 <code style="background:var(--s3);padding:1px 4px;border-radius:3px;">pookat73-prog.github.io</code> 추가<br>
+          8. 아래 칸에 붙여넣기 → 저장
+        </div>
+        <textarea id="fbConfigInput" placeholder='{ "apiKey": "...", "authDomain": "...", "projectId": "...", ... }' style="width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:9px 10px;font-size:11px;font-family:'DM Mono',monospace;resize:vertical;min-height:80px;outline:none;"></textarea>
+        <button class="btn-secondary" style="width:100%;margin-top:7px;" onclick="saveFbConfig()">Firebase 설정 저장</button>
+      </div>
+
+      <div id="syncLoginBox" style="display:none;">
+        <button class="btn-secondary" style="width:100%;background:#fff;color:#333;border-color:#ccc;" onclick="cloudSignIn()">
+          Google로 로그인
+        </button>
+        <div class="settings-help">로그인하면 모든 기기에서 같은 데이터가 자동 동기화됩니다.</div>
+      </div>
+
+      <div id="syncUserBox" style="display:none;">
+        <div id="syncUserInfo" style="background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:9px 11px;margin-bottom:7px;"></div>
+        <div style="display:flex;gap:7px;">
+          <button class="btn-secondary" style="flex:1" onclick="cloudSignOut()">로그아웃</button>
+          <button class="btn-secondary" style="flex:1;color:var(--muted);" onclick="clearFbConfig()">Firebase 설정 변경</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <div style="display:flex;gap:7px;">
         <button class="btn-secondary" style="flex:1" onclick="exportData()">데이터 내보내기</button>
         <button class="btn-secondary" style="flex:1" onclick="document.getElementById('importFile').click()">데이터 가져오기</button>
@@ -1104,8 +1156,240 @@ if('serviceWorker' in navigator){
   });
 }
 
+// ── CLOUD SYNC GLUE (window.cloud는 모듈 스크립트가 채워줌) ──
+let _cloudReady=false;
+let _cloudPushTimer=null;
+let _ignoreNextRemote=false;     // 우리가 방금 푸시한 것이 다시 돌아오는 걸 무시
+const _pending=()=>JSON.stringify({S,_savedAt:Date.now()});
+
+function setSyncStatus(s){
+  const dot=document.getElementById('syncDot'),tip=document.getElementById('syncTip');
+  if(!dot)return;
+  const map={
+    off:{c:'#35354a',t:''},
+    ready:{c:'#9090b8',t:'준비됨'},
+    syncing:{c:'var(--amber)',t:'동기화 중…'},
+    synced:{c:'var(--green)',t:'동기화됨'},
+    error:{c:'var(--red)',t:'동기화 실패'}
+  };
+  dot.style.background=map[s].c;
+  if(tip)tip.textContent=map[s].t;
+}
+
+function pushCloudDebounced(){
+  if(!window.cloud||!window.cloud.user)return;
+  clearTimeout(_cloudPushTimer);
+  setSyncStatus('syncing');
+  _cloudPushTimer=setTimeout(async()=>{
+    try{
+      _ignoreNextRemote=true;
+      await window.cloud.pushState(S);
+      setSyncStatus('synced');
+    }catch(e){
+      console.error('cloud push:',e);
+      setSyncStatus('error');
+      toast('클라우드 저장 실패');
+    }
+  },800);
+}
+
+// 원격에서 받은 데이터를 로컬에 머지. _savedAt이 더 최신이면 적용.
+function applyRemoteState(remote){
+  if(_ignoreNextRemote){_ignoreNextRemote=false;return;}
+  if(!remote||!remote.S)return;
+  const localPayload=localStorage.getItem(KEY);
+  let localTs=0;
+  try{const p=JSON.parse(localPayload);localTs=p._savedAt||0;}catch(e){}
+  const remoteTs=remote._savedAt||0;
+  if(remoteTs<=localTs)return; // 우리 게 더 최신이면 무시
+  // 적용
+  S=remote.S;
+  // 카테고리 기본값 보호
+  if(!S.config.transferCats?.length)S.config.transferCats=JSON.parse(JSON.stringify(DTR));
+  if(!S.config.cardCats?.length)S.config.cardCats=JSON.parse(JSON.stringify(DCD));
+  // 로컬에도 동기화된 페이로드 저장
+  localStorage.setItem(KEY,JSON.stringify({...remote}));
+  setSyncStatus('synced');
+  renderAll();
+  toast('다른 기기 변경사항 반영');
+}
+
+// 인증 상태 변경 콜백
+async function onCloudAuthChange(user){
+  renderSyncUI();
+  if(!user){setSyncStatus('off');return;}
+  setSyncStatus('syncing');
+  try{
+    // 1. 원격 풀
+    const remote=await window.cloud.pullState();
+    if(remote&&remote.S){
+      // 원격 vs 로컬 비교
+      let localTs=0;
+      try{const p=JSON.parse(localStorage.getItem(KEY));localTs=p._savedAt||0;}catch(e){}
+      const remoteTs=remote._savedAt||0;
+      if(remoteTs>localTs){
+        // 원격이 더 최신 → 로컬 덮어쓰기
+        S=remote.S;
+        if(!S.config.transferCats?.length)S.config.transferCats=JSON.parse(JSON.stringify(DTR));
+        if(!S.config.cardCats?.length)S.config.cardCats=JSON.parse(JSON.stringify(DCD));
+        localStorage.setItem(KEY,JSON.stringify(remote));
+        renderAll();
+      }else if(localTs>remoteTs){
+        // 로컬이 더 최신 → 클라우드에 푸시
+        _ignoreNextRemote=true;
+        await window.cloud.pushState(S);
+      }
+    }else{
+      // 원격 없음 → 로컬 푸시 (첫 동기화)
+      _ignoreNextRemote=true;
+      await window.cloud.pushState(S);
+    }
+    // 2. 실시간 리스너 등록
+    window.cloud.watchState(applyRemoteState);
+    setSyncStatus('synced');
+  }catch(e){
+    console.error('initial sync:',e);
+    setSyncStatus('error');
+    toast('초기 동기화 실패');
+  }
+}
+
+function renderSyncUI(){
+  const cfgBox=document.getElementById('syncConfigArea');
+  const noConfigBox=document.getElementById('syncNoConfig');
+  const loginBox=document.getElementById('syncLoginBox');
+  const userBox=document.getElementById('syncUserBox');
+  const userInfo=document.getElementById('syncUserInfo');
+  if(!cfgBox)return;
+  const hasCfg=!!localStorage.getItem('budget_fb_config');
+  const u=window.cloud&&window.cloud.user;
+  noConfigBox.style.display=hasCfg?'none':'block';
+  loginBox.style.display=(hasCfg&&!u)?'block':'none';
+  userBox.style.display=u?'block':'none';
+  if(u&&userInfo){
+    userInfo.innerHTML=`<div style="font-size:12px;color:var(--text);font-weight:500;">${u.email||'익명'}</div>${u.displayName?`<div style="font-size:10px;color:var(--muted);">${u.displayName}</div>`:''}`;
+  }
+}
+
+async function saveFbConfig(){
+  const ta=document.getElementById('fbConfigInput');
+  const txt=ta.value.trim();
+  if(!txt){toast('설정을 붙여넣어주세요');return;}
+  let cfg;
+  try{
+    // 두 가지 형식 지원: JSON 또는 firebaseConfig = {...} JS 객체
+    const m=txt.match(/\{[\s\S]*\}/);
+    if(!m){toast('형식 오류');return;}
+    cfg=Function('return '+m[0])();
+    if(!cfg.apiKey||!cfg.projectId){toast('apiKey/projectId 누락');return;}
+  }catch(e){toast('파싱 실패: '+e.message);return;}
+  localStorage.setItem('budget_fb_config',JSON.stringify(cfg));
+  toast('설정 저장됨. 페이지 새로고침합니다');
+  setTimeout(()=>location.reload(),900);
+}
+function clearFbConfig(){
+  if(!confirm('Firebase 설정을 지우고 로컬 전용으로 돌아갈까요?'))return;
+  localStorage.removeItem('budget_fb_config');
+  if(window.cloud&&window.cloud.signOut)window.cloud.signOut();
+  setTimeout(()=>location.reload(),300);
+}
+async function cloudSignIn(){
+  if(!window.cloud){toast('클라우드 미준비');return;}
+  try{await window.cloud.signInGoogle();}
+  catch(e){console.error(e);toast('로그인 실패: '+(e.message||e.code||''));}
+}
+async function cloudSignOut(){
+  if(!window.cloud)return;
+  try{await window.cloud.signOut();renderSyncUI();setSyncStatus('off');toast('로그아웃');}
+  catch(e){console.error(e);}
+}
+
+// 클라우드 SDK 준비 신호
+window.addEventListener('cloud-ready',()=>{
+  _cloudReady=true;
+  renderSyncUI();
+  if(window.cloud.onAuth)window.cloud.onAuth(onCloudAuthChange);
+});
+
+// sv() 가 호출된 후 클라우드도 동기화
+const _origSv=sv;
+sv=async function(){
+  await _origSv();
+  pushCloudDebounced();
+};
+
 // ── INIT ──
-(async()=>{await ld();renderAll();})();
+(async()=>{await ld();renderAll();renderSyncUI();})();
+</script>
+
+<!-- ════════ Firebase 클라우드 동기화 모듈 ════════ -->
+<script type="module">
+const cfgRaw=localStorage.getItem('budget_fb_config');
+if(!cfgRaw){
+  // 설정 없음 — 로컬 전용 모드
+  window.cloud=null;
+  window.dispatchEvent(new Event('cloud-ready'));
+}else{
+  try{
+    const cfg=JSON.parse(cfgRaw);
+    const {initializeApp}=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js');
+    const {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,signOut,onAuthStateChanged}=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js');
+    const {getFirestore,doc,setDoc,getDoc,onSnapshot,serverTimestamp}=await import('https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js');
+
+    const app=initializeApp(cfg);
+    const auth=getAuth(app);
+    const db=getFirestore(app);
+    const provider=new GoogleAuthProvider();
+
+    let _unsub=null;
+    let _user=null;
+    let _authCb=null;
+
+    // 모바일 호환: 리다이렉트 결과 받기
+    try{await getRedirectResult(auth);}catch(e){}
+
+    onAuthStateChanged(auth,u=>{
+      _user=u;
+      window.cloud.user=u;
+      if(_authCb)_authCb(u);
+    });
+
+    window.cloud={
+      user:null,
+      isReady:true,
+      onAuth(cb){_authCb=cb;if(_user)cb(_user);},
+      async signInGoogle(){
+        // 모바일: redirect, 데스크탑: popup
+        const isMobile=/Android|iPhone|iPad/i.test(navigator.userAgent);
+        if(isMobile){await signInWithRedirect(auth,provider);}
+        else{await signInWithPopup(auth,provider);}
+      },
+      async signOut(){if(_unsub){_unsub();_unsub=null;}await signOut(auth);},
+      async pushState(S){
+        if(!_user)throw new Error('not signed in');
+        const ref=doc(db,'budgets',_user.uid);
+        await setDoc(ref,{S,_savedAt:Date.now(),_serverAt:serverTimestamp()});
+      },
+      async pullState(){
+        if(!_user)return null;
+        const ref=doc(db,'budgets',_user.uid);
+        const snap=await getDoc(ref);
+        return snap.exists()?snap.data():null;
+      },
+      watchState(cb){
+        if(!_user)return;
+        if(_unsub)_unsub();
+        const ref=doc(db,'budgets',_user.uid);
+        _unsub=onSnapshot(ref,snap=>{if(snap.exists())cb(snap.data());});
+      }
+    };
+    window.dispatchEvent(new Event('cloud-ready'));
+  }catch(e){
+    console.error('Firebase init failed:',e);
+    window.cloud=null;
+    window.dispatchEvent(new Event('cloud-ready'));
+  }
+}
 </script>
 </body>
 </html>
