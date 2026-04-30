@@ -337,7 +337,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
   <div class="hero-card" id="heroCard">
     <div class="hero-label">
       <span>이번달 추가로 써도 되는 금액</span>
-      <span style="font-size:9px;color:var(--dim)">카드 한도 기준</span>
+      <span style="display:flex;align-items:center;gap:8px;">
+        <span id="privacyToggle" onclick="togglePrivacy()" title="수입 가리기/보이기" style="cursor:pointer;font-size:13px;color:var(--muted);user-select:none;line-height:1;">👁</span>
+        <span style="font-size:9px;color:var(--dim)">카드 한도 기준</span>
+      </span>
     </div>
     <div class="hero-amount" id="heroAmount">₩ 0</div>
     <div class="hero-bar-wrap"><div class="hero-bar-fill" id="heroBar" style="width:0;background:var(--blue);"></div></div>
@@ -661,7 +664,7 @@ service cloud.firestore {
 // ════════════════════════════════════════════════════════════
 
 // 앱 버전 (sw.js의 CACHE 값과 일치시킬 것)
-const APP_VERSION='v5.5';
+const APP_VERSION='v5.6';
 
 // ── UTILS ──
 const TD=new Date();
@@ -687,6 +690,7 @@ function freshState(){
       cardBillingOffset:1,           // 카드 사용 후 N개월 뒤 결제
       initialMonth:t,
       initialBalance:0,
+      privacy:true,                  // 대시보드에서 수입 등 마스킹
       transferCats:JSON.parse(JSON.stringify(DTR)),
       cardCats:JSON.parse(JSON.stringify(DCD)),
       semiFixed:[]
@@ -897,7 +901,11 @@ function renderAll(){
   bi.style.opacity=bi.readOnly?'0.7':'1';
 
   // Flow rows
-  document.getElementById('flowIncome').textContent='+ '+fmtPlain(c.inc);
+  const masked=S.config.privacy;
+  document.getElementById('flowIncome').textContent=masked?'+ ₩ ●●●●':'+ '+fmtPlain(c.inc);
+  // 토글 버튼 모양도 갱신
+  const ptog=document.getElementById('privacyToggle');
+  if(ptog)ptog.textContent=masked?'👁':'👁‍🗨';
   document.getElementById('flowTransfer').textContent='- '+fmtPlain(c.totTr);
   document.getElementById('flowSemiT').textContent='- '+fmtPlain(c.semiTr);
   document.getElementById('flowCardDue').textContent='- '+fmtPlain(c.cardDueThis);
@@ -954,7 +962,7 @@ function renderAll(){
   document.getElementById('heroUsed').textContent=fmtPlain(c.cardUsedThis);
 
   // 한도 산출 상세
-  document.getElementById('cbbIncome').textContent=fmtPlain(c.inc);
+  document.getElementById('cbbIncome').textContent=masked?'₩ ●●●●':fmtPlain(c.inc);
   document.getElementById('cbbThisTransfer').textContent='- '+fmtPlain(c.totalTransfer);
   document.getElementById('cbbThisCardDue').textContent='- '+fmtPlain(c.cardDueThis);
   document.getElementById('cbbNextTransferBuffer').textContent='- '+fmtPlain(c.estNextTransfer);
@@ -1076,6 +1084,7 @@ function toggleOverride(on){
   sv();renderAll();
 }
 function updateIncome(v){const md=getMonth(S.currentMonth);md.income=parseInt(v)||0;sv();renderAll();}
+function togglePrivacy(){S.config.privacy=!S.config.privacy;sv();renderAll();toast(S.config.privacy?'수입 가림 ON':'수입 가림 OFF');}
 function addItem(type,catId){
   const n=document.getElementById('an_'+catId),a=document.getElementById('aa_'+catId);
   const name=n.value.trim(),amount=parseInt(a.value)||0;
