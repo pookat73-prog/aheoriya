@@ -15,7 +15,7 @@
 :root{
   --bg:#08080e;--s1:#101018;--s2:#16161f;--s3:#1e1e28;
   --border:#262636;--border2:#30304a;
-  --text:#e2e2f0;--muted:#5a5a80;--dim:#35354a;
+  --text:#f0f0fa;--muted:#9090b8;--dim:#6a6a88;
   --green:#0fd4a0;--green-d:rgba(15,212,160,.12);
   --red:#f06070;--red-d:rgba(240,96,112,.12);
   --amber:#f5a623;--amber-d:rgba(245,166,35,.12);
@@ -31,7 +31,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 .header{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 10px;position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);}
 .header-logo{display:flex;align-items:center;gap:8px;}
 .header-logo img{width:26px;height:26px;border-radius:7px;object-fit:cover;border:1px solid var(--border2);}
-.header-logo span{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.04em;}
+.header-logo span{font-size:12px;color:var(--text);font-weight:500;letter-spacing:.04em;}
 .month-nav{display:flex;align-items:center;gap:5px;}
 .month-btn{width:26px;height:26px;border:none;background:var(--s2);color:var(--muted);border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:.15s;}
 .month-btn:hover{background:var(--s3);color:var(--text);}
@@ -292,8 +292,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 <!-- HEADER -->
 <div class="header">
   <div class="header-logo" style="position:relative;">
-    <img src="data:image/jpeg;base64,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" alt="">
-    <span>월간 플래너</span>
+        <span>월간 플래너</span>
     <span id="saveDot" title="" style="width:6px;height:6px;border-radius:50%;background:var(--dim);display:inline-block;transition:.3s;flex-shrink:0;"></span>
     <span id="saveTip" style="font-size:9px;color:var(--dim);letter-spacing:.04em;"></span>
   </div>
