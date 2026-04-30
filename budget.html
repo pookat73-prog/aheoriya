@@ -1261,9 +1261,9 @@ function renderSyncUI(){
   const userBox=document.getElementById('syncUserBox');
   const userInfo=document.getElementById('syncUserInfo');
   if(!cfgBox)return;
-  const hasCfg=!!localStorage.getItem('budget_fb_config');
+  const hasCfg=true; // 베이크드 설정 항상 사용
   const u=window.cloud&&window.cloud.user;
-  noConfigBox.style.display=hasCfg?'none':'block';
+  noConfigBox.style.display='none';
   loginBox.style.display=(hasCfg&&!u)?'block':'none';
   userBox.style.display=u?'block':'none';
   if(u&&userInfo){
@@ -1324,7 +1324,17 @@ sv=async function(){
 
 <!-- ════════ Firebase 클라우드 동기화 모듈 ════════ -->
 <script type="module">
-const cfgRaw=localStorage.getItem('budget_fb_config');
+const BAKED_CONFIG = {
+  apiKey: "AIzaSyCLdaAwWB5CKpjjY6H4IA7whza34w19pdo",
+  authDomain: "mine-a7457.firebaseapp.com",
+  projectId: "mine-a7457",
+  storageBucket: "mine-a7457.firebasestorage.app",
+  messagingSenderId: "605418292640",
+  appId: "1:605418292640:web:aef57f37285483975950c5",
+  measurementId: "G-FDC41VNTB5"
+};
+const override = localStorage.getItem('budget_fb_config');
+const cfgRaw = override || JSON.stringify(BAKED_CONFIG);
 if(!cfgRaw){
   // 설정 없음 — 로컬 전용 모드
   window.cloud=null;
