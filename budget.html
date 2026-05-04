@@ -305,6 +305,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 .hero-info-cell .val{font-family:"DM Mono",monospace;font-size:13px;font-weight:600;color:var(--text);}
 .hero-empty{padding:14px 0 4px;font-size:12px;color:var(--muted);line-height:1.7;}
 .hero-empty a{color:var(--blue);text-decoration:none;}
+
+/* 빠른 지출 추가 */
+.quick-spend{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:13px 14px;}
+.qs-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:12px;color:var(--text);font-weight:500;}
+.qs-hint{font-size:9px;color:var(--dim);font-weight:400;}
+.qs-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin:0 -2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.qs-chips::-webkit-scrollbar{display:none;}
+.qs-chip{flex-shrink:0;padding:7px 13px;background:var(--s2);border:1px solid var(--border);border-radius:99px;font-size:12px;color:var(--muted);cursor:pointer;white-space:nowrap;transition:.15s;font-family:"Noto Sans KR",sans-serif;}
+.qs-chip:hover{color:var(--text);}
+.qs-chip.active{background:var(--blue-d);border-color:rgba(96,128,240,0.4);color:var(--blue);font-weight:500;}
+.qs-chip-amt{font-size:9px;color:var(--dim);margin-left:5px;font-family:"DM Mono",monospace;}
+.qs-chip.active .qs-chip-amt{color:var(--blue);opacity:.7;}
+.qs-add-row{display:flex;gap:5px;margin-bottom:8px;}
+.qs-name-i{flex:1;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 11px;font-size:13px;outline:none;font-family:"Noto Sans KR",sans-serif;min-width:0;}
+.qs-amt-i{width:90px;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 11px;font-size:13px;outline:none;font-family:"DM Mono",monospace;text-align:right;}
+.qs-btn{width:36px;height:36px;background:var(--blue);border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:18px;flex-shrink:0;}
+.qs-btn:active{transform:scale(.96);}
+.qs-list{display:flex;flex-direction:column;gap:4px;max-height:240px;overflow-y:auto;}
+.qs-item{display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:7px;padding:7px 10px;font-size:12px;}
+.qsi-cat{font-size:10px;color:var(--blue);background:var(--blue-d);padding:2px 7px;border-radius:99px;flex-shrink:0;}
+.qsi-name{color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.qsi-amt{color:var(--text);font-family:"DM Mono",monospace;font-weight:500;font-size:12px;}
+.qsi-del{width:22px;height:22px;background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:14px;border-radius:4px;flex-shrink:0;}
+.qsi-del:hover{background:var(--red-d);color:var(--red);}
+.qs-empty{text-align:center;color:var(--dim);font-size:11px;padding:8px 0;}
 </style>
 </head>
 <body>
@@ -358,6 +383,21 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
       이번달 수입을 입력하면 카드 한도가 계산돼요.<br>
       <a href="#" onclick="switchTab('transfer',document.querySelector('[data-tab=\'transfer\']'));return false;">이체 탭에서 입력하기 →</a>
     </div>
+  </div>
+
+  <!-- 빠른 지출 추가 -->
+  <div class="quick-spend">
+    <div class="qs-header">
+      <span>💸 빠른 지출 추가</span>
+      <span class="qs-hint">카테고리 탭 후 입력</span>
+    </div>
+    <div class="qs-chips" id="qsChips"></div>
+    <div class="qs-add-row">
+      <input class="qs-name-i" id="qsName" placeholder="뭐? (예: 택시비)" onkeydown="if(event.key==='Enter')qsAdd()">
+      <input class="qs-amt-i" id="qsAmt" type="number" inputmode="numeric" placeholder="얼마?" onkeydown="if(event.key==='Enter')qsAdd()">
+      <button class="qs-btn" onclick="qsAdd()">+</button>
+    </div>
+    <div class="qs-list" id="qsList"></div>
   </div>
 
   <!-- 카드 한도 산출 상세 -->
@@ -516,6 +556,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
   <div class="card">
     <div class="card-head" style="padding:11px 16px;"><div class="card-head-left"><span style="font-size:11px;color:var(--muted);">⚙ 설정</span></div></div>
     <div class="settings-section" style="border-top:none;">
+      <div style="font-size:11px;color:var(--text);font-weight:500;margin-bottom:6px;">📊 카드 한도 계산 모드</div>
+      <label style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;cursor:pointer;font-size:12px;">
+        <input type="radio" name="budgetMode" value="sustainable" onchange="setBudgetMode(this.value)" style="margin-top:2px;">
+        <div>
+          <div style="color:var(--text);font-weight:500;">안정 모드 <span style="font-size:9px;color:var(--green);">기본</span></div>
+          <div style="font-size:10px;color:var(--muted);line-height:1.5;">매달 비슷한 수입이 들어온다고 가정.<br>한도 = 수입 − 이체. 여유로움.</div>
+        </div>
+      </label>
+      <label style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;cursor:pointer;font-size:12px;">
+        <input type="radio" name="budgetMode" value="conservative" onchange="setBudgetMode(this.value)" style="margin-top:2px;">
+        <div>
+          <div style="color:var(--text);font-weight:500;">보수 모드</div>
+          <div style="font-size:10px;color:var(--muted);line-height:1.5;">다음달 수입 안 깔음. 이번달 수입만으로 다음달 결제까지 책임.<br>한도 = 수입 − 이체 − 결제 − 다음달 이체 예상. 빡빡함.</div>
+        </div>
+      </label>
+    </div>
+    <div class="settings-section">
       <div class="settings-row">
         <label>첫 시작 기준 월</label>
         <input id="setInitMonth" type="month" oninput="updateInitMonth(this.value)">
@@ -664,7 +721,7 @@ service cloud.firestore {
 // ════════════════════════════════════════════════════════════
 
 // 앱 버전 (sw.js의 CACHE 값과 일치시킬 것)
-const APP_VERSION='v5.6';
+const APP_VERSION='v5.7';
 
 // ── UTILS ──
 const TD=new Date();
@@ -688,6 +745,7 @@ function freshState(){
     currentMonth:t,
     config:{
       cardBillingOffset:1,           // 카드 사용 후 N개월 뒤 결제
+      budgetMode:'sustainable',      // 'sustainable'(기본): 매달 수입 가정. 'conservative': 다음달 수입 안 깔음
       initialMonth:t,
       initialBalance:0,
       privacy:true,                  // 대시보드에서 수입 등 마스킹
@@ -866,11 +924,19 @@ function calc(ym){
   // R4
   const safetyBalance=closingBalance;
   const netAsset=closingBalance-cardUsedThis;
-  // R5 정확 카드 한도
+  // R5 카드 한도 (모드별)
   const estNextTransfer=totalTransfer;       // 다음달 이체 = 이번달 이체로 가정
-  const cardLimit=inc-totalTransfer-cardDueThis-estNextTransfer;
+  const mode=S.config.budgetMode||'sustainable';
+  let cardLimit;
+  if(mode==='conservative'){
+    // 보수: 다음달 수입 안 깔고 이번달 수입만으로 다음달 결제까지 책임
+    cardLimit=inc-totalTransfer-cardDueThis-estNextTransfer;
+  }else{
+    // 안정(기본): 매달 비슷한 수입이 들어온다는 가정. 정상상태 한도 = 수입 - 이체
+    cardLimit=inc-totalTransfer;
+  }
   const cardRemaining=cardLimit-cardUsedThis;
-  return{start,inc,totTr,totCd,semiTr,semiCd,totalTransfer,cardUsedThis,cardDueThis,closingBalance,safetyBalance,netAsset,cardLimit,cardRemaining,estNextTransfer};
+  return{start,inc,totTr,totCd,semiTr,semiCd,totalTransfer,cardUsedThis,cardDueThis,closingBalance,safetyBalance,netAsset,cardLimit,cardRemaining,estNextTransfer,mode};
 }
 
 // ── RENDER ──
@@ -985,8 +1051,14 @@ function renderAll(){
   if(sim&&document.activeElement!==sim)sim.value=S.config.initialMonth;
   if(sib&&document.activeElement!==sib)sib.value=S.config.initialBalance||'';
 
+  // 모드 라디오 동기화 + 한도 산출 상세에서 보수전용 행 토글
+  const mode=S.config.budgetMode||'sustainable';
+  document.querySelectorAll('input[name="budgetMode"]').forEach(r=>{r.checked=(r.value===mode);});
+  const conservativeOnly=document.querySelectorAll('#cbbThisCardDue,#cbbNextTransferBuffer');
+  conservativeOnly.forEach(el=>{el.closest('.cbb-budget-row').style.display=(mode==='conservative')?'':'none';});
+
   renderCatList('transfer');renderCatList('card');
-  renderSemi(ym);renderHistory();
+  renderSemi(ym);renderHistory();renderQuickSpend();
 }
 
 function renderCatList(type){
@@ -1085,6 +1157,40 @@ function toggleOverride(on){
 }
 function updateIncome(v){const md=getMonth(S.currentMonth);md.income=parseInt(v)||0;sv();renderAll();}
 function togglePrivacy(){S.config.privacy=!S.config.privacy;sv();renderAll();toast(S.config.privacy?'수입 가림 ON':'수입 가림 OFF');}
+function setBudgetMode(m){S.config.budgetMode=m;sv();renderAll();toast(m==='sustainable'?'안정 모드 적용':'보수 모드 적용');}
+
+// ── 빠른 지출 추가 ──
+let _qsCat=null; // 마지막 선택 카테고리 id
+function qsSelectCat(id){_qsCat=id;try{localStorage.setItem('qs_lastCat',id);}catch(e){}renderQuickSpend();}
+function qsAdd(){
+  const n=document.getElementById('qsName'),a=document.getElementById('qsAmt');
+  const name=n.value.trim(),amount=parseInt(a.value)||0;
+  if(!_qsCat){toast('카테고리를 먼저 탭해주세요');return;}
+  if(!name||!amount){toast('뭐랑 얼마 모두 입력');return;}
+  const md=getMonth(S.currentMonth);
+  md.cardItems.push({id:uid(),catId:_qsCat,name,amount});
+  n.value='';a.value='';sv();renderAll();n.focus();
+}
+function renderQuickSpend(){
+  const chips=document.getElementById('qsChips');if(!chips)return;
+  // 카테고리 유효성 보정
+  if(!_qsCat||!S.config.cardCats.find(c=>c.id===_qsCat)){
+    _qsCat=(localStorage.getItem('qs_lastCat')&&S.config.cardCats.find(c=>c.id===localStorage.getItem('qs_lastCat')))?localStorage.getItem('qs_lastCat'):(S.config.cardCats[0]?.id||null);
+  }
+  const md=getMonth(S.currentMonth);
+  chips.innerHTML=S.config.cardCats.map(c=>{
+    const sub=md.cardItems.filter(i=>i.catId===c.id).reduce((a,i)=>a+(i.amount||0),0);
+    return `<div class="qs-chip${c.id===_qsCat?' active':''}" onclick="qsSelectCat('${c.id}')">${c.name}${sub?`<span class="qs-chip-amt">${fmtPlain(sub)}</span>`:''}</div>`;
+  }).join('');
+  // 최근 5개
+  const list=document.getElementById('qsList');
+  const items=[...md.cardItems].slice(-5).reverse();
+  if(!items.length){list.innerHTML='<div class="qs-empty">아직 입력된 지출이 없어요</div>';return;}
+  list.innerHTML=items.map(i=>{
+    const cat=S.config.cardCats.find(c=>c.id===i.catId);
+    return `<div class="qs-item"><span class="qsi-cat">${cat?.name||'기타'}</span><span class="qsi-name">${i.name}</span><span class="qsi-amt">${fmtPlain(i.amount)}</span><button class="qsi-del" onclick="delItem('card','${i.id}')">×</button></div>`;
+  }).join('');
+}
 function addItem(type,catId){
   const n=document.getElementById('an_'+catId),a=document.getElementById('aa_'+catId);
   const name=n.value.trim(),amount=parseInt(a.value)||0;
