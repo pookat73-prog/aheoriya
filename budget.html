@@ -154,6 +154,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 .exp-amt:focus{background:var(--s2);box-shadow:inset 0 0 0 1px var(--border2);color:var(--text);}
 .del-btn{width:20px;height:20px;border:none;background:transparent;color:var(--dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:5px;transition:.15s;flex-shrink:0;}
 .del-btn:hover{background:var(--red-d);color:var(--red);}
+.track-btn{width:24px;height:24px;border:none;background:transparent;color:var(--dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:5px;flex-shrink:0;opacity:.45;}
+.track-btn.on{opacity:1;background:var(--blue-d);color:var(--blue);}
+.opt-popup-toggle{font-size:11px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;text-align:center;background:var(--s1);color:var(--muted);}
+.opt-popup-toggle.on{background:var(--blue-d);border-color:rgba(96,128,240,.4);color:var(--blue);font-weight:500;}
 .add-row{display:flex;gap:5px;padding:7px 0 3px;}
 .add-name{flex:1;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 9px;font-size:12px;outline:none;font-family:"Noto Sans KR",sans-serif;}
 .add-amt{width:85px;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 9px;font-size:12px;font-family:"DM Mono",monospace;outline:none;text-align:right;}
@@ -798,7 +802,7 @@ service cloud.firestore {
 // ════════════════════════════════════════════════════════════
 
 // 앱 버전 (sw.js의 CACHE 값과 일치시킬 것)
-const APP_VERSION='v6.0';
+const APP_VERSION='v6.1';
 
 // ── UTILS ──
 const TD=new Date();
@@ -1193,7 +1197,11 @@ function renderCatList(type){
       <div class="cat-right">${sub?`<span class="cat-sub">${fmtPlain(sub)}</span>`:''}<span class="cat-tog" id="ctog_${cat.id}">▾</span></div>
     </div>
     <div class="cat-items" id="${bid}" style="display:none">
-      ${catItems.map(it=>`<div class="exp-item"><input class="exp-name" value="${it.name.replace(/"/g,'&quot;')}" onblur="editItem('${type}','${it.id}','name',this.value)" onkeydown="if(event.key==='Enter')this.blur()"><input class="exp-amt" type="number" inputmode="decimal" step="0.1" value="${wonToMan(it.amount)}" onblur="editItem('${type}','${it.id}','amount',this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="만원 단위"><button class="del-btn" onclick="delItem('${type}','${it.id}')">×</button></div>`).join('')}
+      ${catItems.map(it=>{
+        const tracked=!!it.trackOnHome;
+        const ic=tracked?feIcon(it.type||'etc'):'📌';
+        return `<div class="exp-item"><input class="exp-name" value="${it.name.replace(/"/g,'&quot;')}" onblur="editItem('${type}','${it.id}','name',this.value)" onkeydown="if(event.key==='Enter')this.blur()"><input class="exp-amt" type="number" inputmode="decimal" step="0.1" value="${wonToMan(it.amount)}" onblur="editItem('${type}','${it.id}','amount',this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="만원 단위"><button class="track-btn ${tracked?'on':''}" data-track-btn="${it.id}" title="${tracked?'홈에서 추적 중':'홈에 추적 추가'}" onclick="openItemPicker(this,'${type}','${it.id}')">${ic}</button><button class="del-btn" onclick="delItem('${type}','${it.id}')">×</button></div>`;
+      }).join('')}
       <div class="add-row">
         <input class="add-name" id="an_${cat.id}" type="text" placeholder="항목명" onkeydown="if(event.key==='Enter')addItem('${type}','${cat.id}')">
         <input class="add-amt" id="aa_${cat.id}" type="number" inputmode="decimal" step="0.1" placeholder="만원" onkeydown="if(event.key==='Enter')addItem('${type}','${cat.id}')">
@@ -1384,6 +1392,32 @@ function pickType(typeId){
   closeTypePicker();
 }
 
+// 카드/이체 항목용 옵션 팝업 (추적 토글 + 아이콘 선택)
+function openItemPicker(btn,type,itemId){
+  closeTypePicker();
+  const md=getMonth(S.currentMonth);
+  const list=type==='transfer'?md.transferItems:md.cardItems;
+  const it=list.find(i=>i.id===itemId);if(!it)return;
+  const tracked=!!it.trackOnHome;
+  const pick=document.createElement('div');
+  pick.className='fe-type-picker';pick.id='typePicker';
+  pick.innerHTML=`
+    <div style="grid-column:1/-1;font-size:10px;color:var(--muted);margin-bottom:2px;">${it.name||'항목'} 옵션</div>
+    <button class="opt-popup-toggle ${tracked?'on':''}" style="grid-column:1/-1;" onclick="toggleItemTrack('${type}','${itemId}')">${tracked?'✓ 홈에서 추적 중':'홈에서 추적'}</button>
+    ${tracked?`<div style="grid-column:1/-1;font-size:9px;color:var(--dim);margin:4px 0 -2px;">아이콘 선택</div>`+FE_TYPES.map(t=>`<button class="fe-type-opt" title="${t.name}" onclick="setItemType('${type}','${itemId}','${t.id}')">${t.icon}</button>`).join(''):''}
+  `;
+  document.body.appendChild(pick);
+  const r=btn.getBoundingClientRect();
+  const w=210;
+  const left=Math.min(window.innerWidth-w-8,Math.max(8,r.left-w+r.width));
+  pick.style.width=w+'px';
+  pick.style.left=left+'px';
+  pick.style.top=(r.bottom+4)+'px';
+  setTimeout(()=>{
+    document.addEventListener('click',_outsideTypePicker,{capture:true,once:true});
+  },20);
+}
+
 // 고정지출 설정 모달 렌더
 function renderFeSettings(){
   const el=document.getElementById('feMgrList');if(!el)return;
@@ -1407,13 +1441,38 @@ function renderFeSettings(){
   });
 }
 
+// 홈에 표시할 추적 항목 모음 (스탠드얼론 + 카드/이체에서 trackOnHome=true)
+function getHomeTrackables(){
+  const out=[];
+  if(!S.config.fixedExpenses)S.config.fixedExpenses=[];
+  S.config.fixedExpenses.forEach(fe=>{
+    if(fe.showOnHome!==false)out.push({id:fe.id,name:fe.name,amount:fe.amount,type:fe.type||'etc'});
+  });
+  const md=getMonth(S.currentMonth);
+  ['transferItems','cardItems'].forEach(k=>{
+    (md[k]||[]).forEach(it=>{
+      if(it.trackOnHome)out.push({id:it.id,name:it.name,amount:it.amount,type:it.type||'etc'});
+    });
+  });
+  return out;
+}
+function findTrackable(id){
+  const fe=(S.config.fixedExpenses||[]).find(x=>x.id===id);
+  if(fe)return {id:fe.id,name:fe.name,amount:fe.amount,type:fe.type||'etc'};
+  const md=getMonth(S.currentMonth);
+  for(const k of ['transferItems','cardItems']){
+    const it=(md[k]||[]).find(x=>x.id===id&&x.trackOnHome);
+    if(it)return {id:it.id,name:it.name,amount:it.amount,type:it.type||'etc'};
+  }
+  return null;
+}
+
 // 홈 아이콘 그리드 렌더
 function renderFixedExpenses(){
   const el=document.getElementById('feGrid');if(!el)return;
-  if(!S.config.fixedExpenses)S.config.fixedExpenses=[];
-  const visible=S.config.fixedExpenses.filter(x=>x.showOnHome!==false);
+  const visible=getHomeTrackables();
   if(!visible.length){
-    el.innerHTML=`<div class="fes-empty">표시할 고정지출이 없어요.<br>⚙ 설정에서 항목을 추가하거나 표시를 켜세요.</div>`;
+    el.innerHTML=`<div class="fes-empty">표시할 고정지출이 없어요.<br>이체/카드 메뉴 항목 옆 📌 버튼으로 추가하거나<br>⚙ 설정에서 별도 항목을 만드세요.</div>`;
     return;
   }
   const md=getMonth(S.currentMonth);
@@ -1437,8 +1496,8 @@ function renderFixedExpenses(){
 
 // 고정지출 빠른 기록 시트 (히어로 동일 스타일)
 function openFeSheet(id){
+  const fe=findTrackable(id);if(!fe)return;
   _feCurrent=id;
-  const fe=S.config.fixedExpenses.find(x=>x.id===id);if(!fe)return;
   const md=getMonth(S.currentMonth);
   const actual=(md.fixedActual&&md.fixedActual[id])||0;
   document.getElementById('feqsTitle').textContent=`${feIcon(fe.type)} ${fe.name} · 만원 단위`;
@@ -1461,7 +1520,7 @@ function feQuickAdd(){
   const md=getMonth(S.currentMonth);
   if(!md.fixedActual)md.fixedActual={};
   md.fixedActual[_feCurrent]=(md.fixedActual[_feCurrent]||0)+amount;
-  const fe=S.config.fixedExpenses.find(x=>x.id===_feCurrent);
+  const fe=findTrackable(_feCurrent);
   const total=md.fixedActual[_feCurrent];
   const over=fe&&total>fe.amount;
   closeFeSheet();sv();renderAll();
@@ -1501,10 +1560,29 @@ function addItem(type,catId){
   if(!name||!amount){toast('이름과 금액을 입력해주세요');return;}
   const md=getMonth(S.currentMonth);
   const list=type==='transfer'?md.transferItems:md.cardItems;
-  list.push({id:uid(),catId,name,amount});
+  list.push({id:uid(),catId,name,amount,trackOnHome:false,type:'etc'});
   n.value='';a.value='';sv();renderAll();
   const b=document.getElementById('cb_'+catId);if(b)b.style.display='block';
   const tog=document.getElementById('ctog_'+catId);if(tog)tog.classList.add('open');
+}
+function toggleItemTrack(type,itemId){
+  const md=getMonth(S.currentMonth);
+  const list=type==='transfer'?md.transferItems:md.cardItems;
+  const it=list.find(i=>i.id===itemId);if(!it)return;
+  it.trackOnHome=!it.trackOnHome;
+  if(it.trackOnHome&&!it.type)it.type='etc';
+  sv();renderAll();
+  // 팝업 다시 그리기
+  const btn=document.querySelector(`[data-track-btn="${itemId}"]`);
+  if(btn)openItemPicker(btn,type,itemId);
+}
+function setItemType(type,itemId,typeId){
+  const md=getMonth(S.currentMonth);
+  const list=type==='transfer'?md.transferItems:md.cardItems;
+  const it=list.find(i=>i.id===itemId);if(!it)return;
+  it.type=typeId;
+  if(!it.trackOnHome)it.trackOnHome=true;
+  closeTypePicker();sv();renderAll();
 }
 function delItem(type,itemId){
   const md=getMonth(S.currentMonth);
