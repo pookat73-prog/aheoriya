@@ -306,30 +306,46 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 .hero-empty{padding:14px 0 4px;font-size:12px;color:var(--muted);line-height:1.7;}
 .hero-empty a{color:var(--blue);text-decoration:none;}
 
-/* 빠른 지출 추가 */
-.quick-spend{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:13px 14px;}
-.qs-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:12px;color:var(--text);font-weight:500;}
-.qs-hint{font-size:9px;color:var(--dim);font-weight:400;}
-.qs-chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin:0 -2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.qs-chips::-webkit-scrollbar{display:none;}
-.qs-chip{flex-shrink:0;padding:7px 13px;background:var(--s2);border:1px solid var(--border);border-radius:99px;font-size:12px;color:var(--muted);cursor:pointer;white-space:nowrap;transition:.15s;font-family:"Noto Sans KR",sans-serif;}
-.qs-chip:hover{color:var(--text);}
-.qs-chip.active{background:var(--blue-d);border-color:rgba(96,128,240,0.4);color:var(--blue);font-weight:500;}
-.qs-chip-amt{font-size:9px;color:var(--dim);margin-left:5px;font-family:"DM Mono",monospace;}
-.qs-chip.active .qs-chip-amt{color:var(--blue);opacity:.7;}
-.qs-add-row{display:flex;gap:5px;margin-bottom:8px;}
-.qs-name-i{flex:1;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 11px;font-size:13px;outline:none;font-family:"Noto Sans KR",sans-serif;min-width:0;}
-.qs-amt-i{width:90px;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 11px;font-size:13px;outline:none;font-family:"DM Mono",monospace;text-align:right;}
-.qs-btn{width:36px;height:36px;background:var(--blue);border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:18px;flex-shrink:0;}
-.qs-btn:active{transform:scale(.96);}
-.qs-list{display:flex;flex-direction:column;gap:4px;max-height:240px;overflow-y:auto;}
-.qs-item{display:flex;align-items:center;gap:8px;background:var(--s2);border-radius:7px;padding:7px 10px;font-size:12px;}
-.qsi-cat{font-size:10px;color:var(--blue);background:var(--blue-d);padding:2px 7px;border-radius:99px;flex-shrink:0;}
-.qsi-name{color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.qsi-amt{color:var(--text);font-family:"DM Mono",monospace;font-weight:500;font-size:12px;}
-.qsi-del{width:22px;height:22px;background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:14px;border-radius:4px;flex-shrink:0;}
-.qsi-del:hover{background:var(--red-d);color:var(--red);}
-.qs-empty{text-align:center;color:var(--dim);font-size:11px;padding:8px 0;}
+/* 히어로 빠른 차감 */
+.hero-card{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hero-card:active{transform:scale(.99);}
+.hero-tap-hint{font-size:9px;color:var(--dim);letter-spacing:.04em;margin-top:6px;text-align:center;}
+.hero-quick-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:.2s;}
+.hero-quick-overlay.open{opacity:1;pointer-events:all;}
+.hero-quick-sheet{background:var(--s1);border-radius:18px 18px 0 0;padding:20px 18px 40px;width:100%;max-width:420px;transform:translateY(40px);transition:.2s;}
+.hero-quick-overlay.open .hero-quick-sheet{transform:translateY(0);}
+.hqs-title{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.hqs-row{display:flex;gap:8px;}
+.hqs-input{flex:1;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:12px 14px;font-size:18px;outline:none;font-family:"DM Mono",monospace;text-align:right;}
+.hqs-confirm{padding:12px 20px;background:var(--blue);border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:15px;font-weight:600;}
+.hqs-confirm:active{transform:scale(.97);}
+/* 고정지출 추적 */
+.fixed-exp-section{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:13px 14px;}
+.fes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.fes-title{font-size:12px;color:var(--text);font-weight:500;}
+.fes-add-btn{font-size:11px;color:var(--blue);background:transparent;border:1px solid rgba(96,128,240,.3);border-radius:99px;padding:3px 10px;cursor:pointer;}
+.fes-chips{display:flex;flex-direction:column;gap:6px;}
+.fe-chip{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:.15s;}
+.fe-chip:active{transform:scale(.99);}
+.fe-chip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.fe-chip-name{font-size:12px;color:var(--text);font-weight:500;}
+.fe-chip-nums{font-size:11px;font-family:"DM Mono",monospace;}
+.fe-chip-bar-wrap{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
+.fe-chip-bar{height:100%;border-radius:2px;transition:width .4s;}
+.fe-input-row{display:flex;gap:6px;margin-top:8px;align-items:center;}
+.fe-input{flex:1;background:var(--s1);border:1px solid var(--blue);color:var(--text);border-radius:7px;padding:8px 10px;font-size:15px;outline:none;font-family:"DM Mono",monospace;text-align:right;}
+.fe-confirm-btn{padding:8px 14px;background:var(--blue);border:none;color:#fff;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;}
+.fe-confirm-btn:active{transform:scale(.96);}
+.fe-del-btn{width:22px;height:22px;background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:14px;border-radius:4px;padding:0;flex-shrink:0;}
+.fe-del-btn:hover{color:var(--red);}
+.fes-empty{font-size:11px;color:var(--dim);text-align:center;padding:8px 0;line-height:1.7;}
+/* 빠른 소비 내역 (카드탭) */
+.quick-items-card{margin-top:0;}
+.qi-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--s2);border-radius:7px;font-size:12px;margin-bottom:4px;}
+.qi-label{font-size:10px;color:var(--purple);background:rgba(149,97,226,.12);padding:2px 7px;border-radius:99px;flex-shrink:0;}
+.qi-amt{color:var(--text);font-family:"DM Mono",monospace;font-weight:500;flex:1;text-align:right;}
+.qi-del{width:22px;height:22px;background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:14px;border-radius:4px;}
+.qi-del:hover{background:var(--red-d);color:var(--red);}
 </style>
 </head>
 <body>
@@ -358,12 +374,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 <!-- TAB: 홈 -->
 <div class="tab-pane active" id="tab-home">
 
-  <!-- HERO: 추가로 써도 되는 금액 (가장 잘 보이게) -->
-  <div class="hero-card" id="heroCard">
+  <!-- HERO: 추가로 써도 되는 금액 (탭하면 빠른 차감) -->
+  <div class="hero-card" id="heroCard" onclick="openHeroSheet()">
     <div class="hero-label">
       <span>이번달 추가로 써도 되는 금액</span>
       <span style="display:flex;align-items:center;gap:8px;">
-        <span id="privacyToggle" onclick="togglePrivacy()" title="수입 가리기/보이기" style="cursor:pointer;font-size:13px;color:var(--muted);user-select:none;line-height:1;">👁</span>
+        <span id="privacyToggle" onclick="event.stopPropagation();togglePrivacy()" title="수입 가리기/보이기" style="cursor:pointer;font-size:13px;color:var(--muted);user-select:none;line-height:1;">👁</span>
         <span style="font-size:9px;color:var(--dim)">카드 한도 기준</span>
       </span>
     </div>
@@ -381,23 +397,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
     </div>
     <div class="hero-empty" id="heroEmpty" style="display:none;">
       이번달 수입을 입력하면 카드 한도가 계산돼요.<br>
-      <a href="#" onclick="switchTab('transfer',document.querySelector('[data-tab=\'transfer\']'));return false;">이체 탭에서 입력하기 →</a>
+      <a href="#" onclick="event.stopPropagation();switchTab('transfer',document.querySelector('[data-tab=\'transfer\']'));return false;">이체 탭에서 입력하기 →</a>
     </div>
+    <div class="hero-tap-hint">탭해서 소비 차감 ↑</div>
   </div>
 
-  <!-- 빠른 지출 추가 -->
-  <div class="quick-spend">
-    <div class="qs-header">
-      <span>💸 빠른 지출 추가</span>
-      <span class="qs-hint">카테고리 탭 후 입력</span>
+  <!-- 고정지출 추적 -->
+  <div class="fixed-exp-section">
+    <div class="fes-header">
+      <span class="fes-title">📌 고정지출 추적</span>
+      <button class="fes-add-btn" onclick="openFixedExpModal()">+ 항목 추가</button>
     </div>
-    <div class="qs-chips" id="qsChips"></div>
-    <div class="qs-add-row">
-      <input class="qs-name-i" id="qsName" placeholder="뭐? (예: 택시비)" onkeydown="if(event.key==='Enter')qsAdd()">
-      <input class="qs-amt-i" id="qsAmt" type="number" inputmode="numeric" placeholder="얼마?" onkeydown="if(event.key==='Enter')qsAdd()">
-      <button class="qs-btn" onclick="qsAdd()">+</button>
-    </div>
-    <div class="qs-list" id="qsList"></div>
+    <div class="fes-chips" id="fesChips"></div>
   </div>
 
   <!-- 카드 한도 산출 상세 -->
@@ -528,6 +539,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 
 <!-- TAB: 카드 -->
 <div class="tab-pane" id="tab-card">
+  <div class="card" id="quickItemsCard" style="display:none;">
+    <div class="card-head">
+      <div class="card-head-left"><div class="card-dot" style="background:var(--purple)"></div><span class="card-title">빠른 소비 <span style="font-size:9px;color:var(--dim);margin-left:4px;">홈 탭에서 입력한 것</span></span></div>
+      <span class="card-total" id="quickItemsTotal" style="color:var(--purple)">₩ 0</span>
+    </div>
+    <div class="card-body quick-items-card" id="quickItemsList"></div>
+  </div>
   <div class="card">
     <div class="card-head">
       <div class="card-head-left"><div class="card-dot b"></div><span class="card-title">카드지출 <span style="font-size:9px;color:var(--dim);margin-left:4px;">다음달 결제</span></span></div>
@@ -706,6 +724,30 @@ service cloud.firestore {
 </div>
 </div>
 
+<!-- OVERLAY: 히어로 빠른 차감 -->
+<div class="hero-quick-overlay" id="heroQuickOverlay" onclick="if(event.target===this)closeHeroSheet()">
+  <div class="hero-quick-sheet">
+    <div class="hqs-title">소비 금액 입력 (카드 한도에서 차감)</div>
+    <div class="hqs-row">
+      <input class="hqs-input" id="hqsInput" type="number" inputmode="numeric" placeholder="0" onkeydown="if(event.key==='Enter')heroQuickAdd()">
+      <button class="hqs-confirm" onclick="heroQuickAdd()">차감</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: 고정지출 추가 -->
+<div class="modal-overlay" id="modalFixedExp" onclick="closeModal('modalFixedExp',event)">
+<div class="modal">
+  <div class="modal-title">고정지출 항목 추가</div>
+  <div class="field"><label>항목명</label><input id="feName" type="text" placeholder="마운자로, 보험료 등"></div>
+  <div class="field"><label>월 한도 금액</label><input id="feAmt" type="number" placeholder="0" inputmode="numeric"></div>
+  <div class="modal-actions">
+    <button class="btn-cancel" onclick="closeModal('modalFixedExp')">취소</button>
+    <button class="btn-confirm" onclick="addFixedExp()">추가</button>
+  </div>
+</div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -751,9 +793,10 @@ function freshState(){
       privacy:true,                  // 대시보드에서 수입 등 마스킹
       transferCats:JSON.parse(JSON.stringify(DTR)),
       cardCats:JSON.parse(JSON.stringify(DCD)),
-      semiFixed:[]
+      semiFixed:[],
+      fixedExpenses:[]               // [{id,name,amount}] 고정지출 추적 항목
     },
-    months:{},                       // ym -> {income, transferItems, cardItems, balanceOverride}
+    months:{},                       // ym -> {income, transferItems, cardItems, quickSpend, fixedActual, balanceOverride}
     history:{}                       // 수동 스냅샷
   };
 }
@@ -768,9 +811,14 @@ function getMonth(ym){
       income:prev?prev.income:0,
       transferItems:prev?prev.transferItems.map(i=>({...i,id:uid()})):[],
       cardItems:prev?prev.cardItems.map(i=>({...i,id:uid()})):[],
+      quickSpend:[],                 // 히어로 탭 빠른 차감 항목
+      fixedActual:{},                // {fixedExpenseId: totalActual} 고정지출 실제 사용액
       balanceOverride:null
     };
   }
+  // 기존 데이터에 필드 없으면 보완
+  if(!S.months[ym].quickSpend)S.months[ym].quickSpend=[];
+  if(!S.months[ym].fixedActual)S.months[ym].fixedActual={};
   return S.months[ym];
 }
 
@@ -872,6 +920,7 @@ async function ld(){
     S.config={...S.config,...(m.config||{})};
     if(!S.config.transferCats?.length)S.config.transferCats=JSON.parse(JSON.stringify(DTR));
     if(!S.config.cardCats?.length)S.config.cardCats=JSON.parse(JSON.stringify(DCD));
+    if(!S.config.fixedExpenses)S.config.fixedExpenses=[];
     S.months=m.months||{};
     S.history=m.history||{};
   }catch(e){console.warn('Load error:',e);}
@@ -880,7 +929,8 @@ async function ld(){
 // ── CALC ──
 function activeSemi(ym){return S.config.semiFixed.filter(x=>{const e=addM(x.startMonth,x.durationMonths-1);return ym>=x.startMonth&&ym<=e;});}
 function sumTransferItems(ym){const m=S.months[ym];return m?m.transferItems.reduce((a,i)=>a+(i.amount||0),0):0;}
-function sumCardItems(ym){const m=S.months[ym];return m?m.cardItems.reduce((a,i)=>a+(i.amount||0),0):0;}
+function sumCardItems(ym){const m=S.months[ym];if(!m)return 0;const ci=m.cardItems.reduce((a,i)=>a+(i.amount||0),0);const qi=(m.quickSpend||[]).reduce((a,i)=>a+(i.amount||0),0);return ci+qi;}
+function sumQuickItems(ym){const m=S.months[ym];return m?(m.quickSpend||[]).reduce((a,i)=>a+(i.amount||0),0):0;}
 function semiTransferOf(ym){return activeSemi(ym).filter(x=>x.payType==='transfer').reduce((a,x)=>a+(x.amount||0),0);}
 function semiCardOf(ym){return activeSemi(ym).filter(x=>x.payType==='card').reduce((a,x)=>a+(x.amount||0),0);}
 // 이번달 통장에서 빠지는 카드값 = (M − offset)월 카드 사용분
@@ -1036,7 +1086,9 @@ function renderAll(){
   cl.textContent=fmt(c.cardLimit);
   cl.style.color=c.cardLimit>=0?'var(--text)':'var(--red)';
   document.getElementById('cbbPlanned').textContent=fmtPlain(c.cardUsedThis);
-  document.getElementById('cbbBreakdown').textContent='(카드지출 '+fmtPlain(c.totCd)+' + 세미고정 '+fmtPlain(c.semiCd)+')';
+  const qTot=sumQuickItems(ym);
+  const qPart=qTot?` + 빠른소비 ${fmtPlain(qTot)}`:'';
+  document.getElementById('cbbBreakdown').textContent='(카드지출 '+fmtPlain(c.totCd)+' + 세미고정 '+fmtPlain(c.semiCd)+qPart+')';
 
   // Income input
   const ii=document.getElementById('incomeInput');
@@ -1058,7 +1110,7 @@ function renderAll(){
   conservativeOnly.forEach(el=>{el.closest('.cbb-budget-row').style.display=(mode==='conservative')?'':'none';});
 
   renderCatList('transfer');renderCatList('card');
-  renderSemi(ym);renderHistory();renderQuickSpend();
+  renderSemi(ym);renderHistory();renderFixedExpenses();renderQuickItems();
 }
 
 function renderCatList(type){
@@ -1159,37 +1211,131 @@ function updateIncome(v){const md=getMonth(S.currentMonth);md.income=parseInt(v)
 function togglePrivacy(){S.config.privacy=!S.config.privacy;sv();renderAll();toast(S.config.privacy?'수입 가림 ON':'수입 가림 OFF');}
 function setBudgetMode(m){S.config.budgetMode=m;sv();renderAll();toast(m==='sustainable'?'안정 모드 적용':'보수 모드 적용');}
 
-// ── 빠른 지출 추가 ──
-let _qsCat=null; // 마지막 선택 카테고리 id
-function qsSelectCat(id){_qsCat=id;try{localStorage.setItem('qs_lastCat',id);}catch(e){}renderQuickSpend();}
-function qsAdd(){
-  const n=document.getElementById('qsName'),a=document.getElementById('qsAmt');
-  const name=n.value.trim(),amount=parseInt(a.value)||0;
-  if(!_qsCat){toast('카테고리를 먼저 탭해주세요');return;}
-  if(!name||!amount){toast('뭐랑 얼마 모두 입력');return;}
-  const md=getMonth(S.currentMonth);
-  md.cardItems.push({id:uid(),catId:_qsCat,name,amount});
-  n.value='';a.value='';sv();renderAll();n.focus();
+// ── 히어로 빠른 차감 ──
+function openHeroSheet(){
+  const ov=document.getElementById('heroQuickOverlay');
+  ov.classList.add('open');
+  setTimeout(()=>document.getElementById('hqsInput').focus(),180);
 }
-function renderQuickSpend(){
-  const chips=document.getElementById('qsChips');if(!chips)return;
-  // 카테고리 유효성 보정
-  if(!_qsCat||!S.config.cardCats.find(c=>c.id===_qsCat)){
-    _qsCat=(localStorage.getItem('qs_lastCat')&&S.config.cardCats.find(c=>c.id===localStorage.getItem('qs_lastCat')))?localStorage.getItem('qs_lastCat'):(S.config.cardCats[0]?.id||null);
+function closeHeroSheet(){
+  document.getElementById('heroQuickOverlay').classList.remove('open');
+  document.getElementById('hqsInput').value='';
+}
+function heroQuickAdd(){
+  const inp=document.getElementById('hqsInput');
+  const amount=parseInt(inp.value)||0;
+  if(!amount){toast('금액을 입력해주세요');return;}
+  const md=getMonth(S.currentMonth);
+  md.quickSpend.push({id:uid(),amount,at:Date.now()});
+  inp.value='';closeHeroSheet();sv();renderAll();
+  toast('차감됨 −'+fmtPlain(amount));
+}
+
+// ── 고정지출 추적 ──
+let _feOpen=null; // 현재 입력창 열린 chip id
+
+function openFixedExpModal(){
+  document.getElementById('feName').value='';document.getElementById('feAmt').value='';
+  document.getElementById('modalFixedExp').classList.add('open');
+  setTimeout(()=>document.getElementById('feName').focus(),100);
+}
+function addFixedExp(){
+  const name=document.getElementById('feName').value.trim();
+  const amount=parseInt(document.getElementById('feAmt').value)||0;
+  if(!name||!amount){toast('이름과 금액을 모두 입력해주세요');return;}
+  if(!S.config.fixedExpenses)S.config.fixedExpenses=[];
+  S.config.fixedExpenses.push({id:uid(),name,amount});
+  closeModal('modalFixedExp');sv();renderFixedExpenses();toast('추가했어요 ✓');
+}
+function delFixedExp(id){
+  if(!confirm('이 항목을 삭제할까요? 이번달 기록도 사라져요.'))return;
+  S.config.fixedExpenses=S.config.fixedExpenses.filter(x=>x.id!==id);
+  // 모든 월에서 실적 데이터도 제거
+  Object.values(S.months).forEach(m=>{if(m.fixedActual)delete m.fixedActual[id];});
+  _feOpen=null;sv();renderFixedExpenses();
+}
+function feChipTap(id){
+  _feOpen=(_feOpen===id)?null:id;
+  renderFixedExpenses();
+  if(_feOpen){
+    setTimeout(()=>{const el=document.getElementById('fe_inp_'+id);if(el)el.focus();},80);
+  }
+}
+function feRecord(id){
+  const inp=document.getElementById('fe_inp_'+id);
+  const amount=parseInt(inp.value)||0;
+  if(!amount){toast('금액을 입력해주세요');return;}
+  const md=getMonth(S.currentMonth);
+  if(!md.fixedActual)md.fixedActual={};
+  md.fixedActual[id]=(md.fixedActual[id]||0)+amount;
+  const fe=S.config.fixedExpenses.find(x=>x.id===id);
+  const total=md.fixedActual[id];
+  const over=fe&&total>fe.amount;
+  _feOpen=null;sv();renderFixedExpenses();
+  if(over)toast(`⚠ 한도 초과! ${fmtPlain(total-fe.amount)} 초과`);
+  else toast('기록됨 ✓');
+}
+function feReset(id){
+  const md=getMonth(S.currentMonth);
+  if(!md.fixedActual)return;
+  md.fixedActual[id]=0;
+  sv();renderFixedExpenses();
+}
+
+function renderFixedExpenses(){
+  const el=document.getElementById('fesChips');if(!el)return;
+  if(!S.config.fixedExpenses)S.config.fixedExpenses=[];
+  if(!S.config.fixedExpenses.length){
+    el.innerHTML=`<div class="fes-empty">고정지출 항목이 없어요.<br>"+ 항목 추가"로 마운자로, 보험료 등을 등록해보세요.</div>`;
+    return;
   }
   const md=getMonth(S.currentMonth);
-  chips.innerHTML=S.config.cardCats.map(c=>{
-    const sub=md.cardItems.filter(i=>i.catId===c.id).reduce((a,i)=>a+(i.amount||0),0);
-    return `<div class="qs-chip${c.id===_qsCat?' active':''}" onclick="qsSelectCat('${c.id}')">${c.name}${sub?`<span class="qs-chip-amt">${fmtPlain(sub)}</span>`:''}</div>`;
-  }).join('');
-  // 최근 5개
-  const list=document.getElementById('qsList');
-  const items=[...md.cardItems].slice(-5).reverse();
-  if(!items.length){list.innerHTML='<div class="qs-empty">아직 입력된 지출이 없어요</div>';return;}
-  list.innerHTML=items.map(i=>{
-    const cat=S.config.cardCats.find(c=>c.id===i.catId);
-    return `<div class="qs-item"><span class="qsi-cat">${cat?.name||'기타'}</span><span class="qsi-name">${i.name}</span><span class="qsi-amt">${fmtPlain(i.amount)}</span><button class="qsi-del" onclick="delItem('card','${i.id}')">×</button></div>`;
-  }).join('');
+  el.innerHTML='';
+  S.config.fixedExpenses.forEach(fe=>{
+    const actual=(md.fixedActual&&md.fixedActual[fe.id])||0;
+    const pct=fe.amount>0?Math.min(100,actual/fe.amount*100):(actual>0?100:0);
+    const over=actual>fe.amount&&fe.amount>0;
+    const barClr=over?'var(--red)':pct>=80?'var(--amber)':'var(--green)';
+    const amtColor=over?'color:var(--red)':'';
+    const overAmt=over?` (${fmtPlain(actual-fe.amount)} 초과)`:'';
+    const isOpen=_feOpen===fe.id;
+    const div=document.createElement('div');
+    div.className='fe-chip';
+    div.innerHTML=`<div onclick="feChipTap('${fe.id}')">
+      <div class="fe-chip-top">
+        <span class="fe-chip-name">${fe.name}</span>
+        <span class="fe-chip-nums" style="${amtColor}">${fmtPlain(actual)} / ${fmtPlain(fe.amount)}${overAmt}</span>
+      </div>
+      <div class="fe-chip-bar-wrap"><div class="fe-chip-bar" style="width:${pct}%;background:${barClr}"></div></div>
+    </div>
+    ${isOpen?`<div class="fe-input-row">
+      <input class="fe-input" id="fe_inp_${fe.id}" type="number" inputmode="numeric" placeholder="쓴 금액" onkeydown="if(event.key==='Enter')feRecord('${fe.id}')">
+      <button class="fe-confirm-btn" onclick="feRecord('${fe.id}')">기록</button>
+      ${actual>0?`<button class="fe-del-btn" title="이달 기록 초기화" onclick="feReset('${fe.id}')">↺</button>`:''}
+      <button class="fe-del-btn" title="항목 삭제" onclick="delFixedExp('${fe.id}')">×</button>
+    </div>`:''}`;
+    el.appendChild(div);
+  });
+}
+
+// ── 빠른 소비 내역 (카드탭) ──
+function delQuickItem(id){
+  const md=getMonth(S.currentMonth);
+  md.quickSpend=md.quickSpend.filter(i=>i.id!==id);
+  sv();renderAll();
+}
+function renderQuickItems(){
+  const card=document.getElementById('quickItemsCard');
+  const list=document.getElementById('quickItemsList');
+  const total=document.getElementById('quickItemsTotal');
+  if(!card||!list)return;
+  const md=getMonth(S.currentMonth);
+  const items=(md.quickSpend||[]).slice().reverse();
+  if(!items.length){card.style.display='none';return;}
+  card.style.display='';
+  const sum=items.reduce((a,i)=>a+(i.amount||0),0);
+  total.textContent=fmtPlain(sum);
+  list.innerHTML=items.map(i=>`<div class="qi-item"><span class="qi-label">빠른소비</span><span class="qi-amt">${fmtPlain(i.amount)}</span><button class="qi-del" onclick="delQuickItem('${i.id}')">×</button></div>`).join('');
 }
 function addItem(type,catId){
   const n=document.getElementById('an_'+catId),a=document.getElementById('aa_'+catId);
