@@ -1,5 +1,5 @@
 // 월간 플래너 서비스 워커
-const CACHE = 'budget-v6-0';
+const CACHE = 'budget-v6-1';
 const ASSETS = [
   './',
   './budget.html',
