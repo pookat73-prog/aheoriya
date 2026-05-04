@@ -423,7 +423,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
   <div class="fixed-exp-section">
     <div class="fes-header">
       <span class="fes-title">📌 고정지출 추적</span>
-      <button class="fes-gear" onclick="openFeSettings()" title="고정지출 설정">⚙</button>
+      <span style="font-size:9px;color:var(--dim);">이체/카드 항목 📌로 추가</span>
     </div>
     <div class="fe-grid" id="feGrid"></div>
   </div>
@@ -802,7 +802,7 @@ service cloud.firestore {
 // ════════════════════════════════════════════════════════════
 
 // 앱 버전 (sw.js의 CACHE 값과 일치시킬 것)
-const APP_VERSION='v6.1';
+const APP_VERSION='v6.2';
 
 // ── UTILS ──
 const TD=new Date();
@@ -1392,7 +1392,7 @@ function pickType(typeId){
   closeTypePicker();
 }
 
-// 카드/이체 항목용 옵션 팝업 (추적 토글 + 아이콘 선택)
+// 카드/이체 항목용 아이콘 선택 팝업 (선택 즉시 추적 켜짐)
 function openItemPicker(btn,type,itemId){
   closeTypePicker();
   const md=getMonth(S.currentMonth);
@@ -1402,9 +1402,9 @@ function openItemPicker(btn,type,itemId){
   const pick=document.createElement('div');
   pick.className='fe-type-picker';pick.id='typePicker';
   pick.innerHTML=`
-    <div style="grid-column:1/-1;font-size:10px;color:var(--muted);margin-bottom:2px;">${it.name||'항목'} 옵션</div>
-    <button class="opt-popup-toggle ${tracked?'on':''}" style="grid-column:1/-1;" onclick="toggleItemTrack('${type}','${itemId}')">${tracked?'✓ 홈에서 추적 중':'홈에서 추적'}</button>
-    ${tracked?`<div style="grid-column:1/-1;font-size:9px;color:var(--dim);margin:4px 0 -2px;">아이콘 선택</div>`+FE_TYPES.map(t=>`<button class="fe-type-opt" title="${t.name}" onclick="setItemType('${type}','${itemId}','${t.id}')">${t.icon}</button>`).join(''):''}
+    <div style="grid-column:1/-1;font-size:10px;color:var(--muted);margin-bottom:2px;">${it.name||'항목'} · 아이콘 선택</div>
+    ${FE_TYPES.map(t=>`<button class="fe-type-opt" title="${t.name}" onclick="setItemType('${type}','${itemId}','${t.id}')">${t.icon}</button>`).join('')}
+    ${tracked?`<button class="opt-popup-toggle" style="grid-column:1/-1;margin-top:4px;color:var(--red);border-color:rgba(231,90,90,.3);" onclick="toggleItemTrack('${type}','${itemId}')">추적 끄기</button>`:''}
   `;
   document.body.appendChild(pick);
   const r=btn.getBoundingClientRect();
@@ -1571,10 +1571,7 @@ function toggleItemTrack(type,itemId){
   const it=list.find(i=>i.id===itemId);if(!it)return;
   it.trackOnHome=!it.trackOnHome;
   if(it.trackOnHome&&!it.type)it.type='etc';
-  sv();renderAll();
-  // 팝업 다시 그리기
-  const btn=document.querySelector(`[data-track-btn="${itemId}"]`);
-  if(btn)openItemPicker(btn,type,itemId);
+  closeTypePicker();sv();renderAll();
 }
 function setItemType(type,itemId,typeId){
   const md=getMonth(S.currentMonth);
