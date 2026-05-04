@@ -508,9 +508,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
         <div class="metric-cell-sub" id="metricNetSub">모든 의무 갚고 남는 돈</div>
       </div>
       <div class="metric-cell">
-        <div class="metric-cell-label">안전 잔액 <span class="info-tip" title="이번달 결제일까지 모든 의무를 처리한 후 남는 금액 (다음달 결제될 카드 사용분 제외)">i</span></div>
+        <div class="metric-cell-label" id="metricSafeLabel">안전 잔액 <span class="info-tip" id="metricSafeInfo" title="이번달 결제일까지 모든 의무를 처리한 후 남는 금액 (다음달 결제될 카드 사용분 제외)">i</span></div>
         <div class="metric-cell-val pos" id="metricSafe">0만</div>
-        <div class="metric-cell-sub">이번달 마감까지 안전</div>
+        <div class="metric-cell-sub" id="metricSafeSub">이번달 마감까지 안전</div>
       </div>
     </div>
     <div class="ah-warning" id="ahWarning" style="display:none">
@@ -1040,11 +1040,18 @@ function calc(ym){
   // R3
   const closingBalance=start+inc-totalTransfer-cardDueThis;
   // R4
-  const safetyBalance=closingBalance;
+  const mode=S.config.budgetMode||'sustainable';
+  let safetyBalance;
+  if(mode==='sustainable'){
+    // 안정: 다음달에도 비슷한 수입/지출 반복이라 가정 → 다음달 예상 잔액
+    safetyBalance=closingBalance+inc-totalTransfer-cardUsedThis;
+  }else{
+    // 보수: 이번달 마감까지만 계산
+    safetyBalance=closingBalance;
+  }
   const netAsset=closingBalance-cardUsedThis;
   // R5 카드 한도 (모드별)
   const estNextTransfer=totalTransfer;       // 다음달 이체 = 이번달 이체로 가정
-  const mode=S.config.budgetMode||'sustainable';
   let cardLimit;
   if(mode==='conservative'){
     // 보수: 다음달 수입 안 깔고 이번달 수입만으로 다음달 결제까지 책임
@@ -1104,6 +1111,18 @@ function renderAll(){
   ms.textContent=fmt(c.safetyBalance);ms.className='metric-cell-val '+(c.safetyBalance>=0?'pos':'neg');
   document.getElementById('metricNetSub').textContent='카드 사용분 '+fmtPlain(c.cardUsedThis)+' 차감';
 
+  // 모드별 안전 잔액 라벨 업데이트
+  const safeLabel=document.getElementById('metricSafeLabel');
+  const safeInfo=document.getElementById('metricSafeInfo');
+  const safeSub=document.getElementById('metricSafeSub');
+  if(c.mode==='sustainable'){
+    safeLabel.innerHTML='예상 잔액 <span class="info-tip" id="metricSafeInfo" title="매달 비슷한 수입과 지출이 반복된다고 가정하여 다음달 통장에 남을 예상 잔액">i</span>';
+    safeSub.textContent='다음달 통장에 남을 예상액';
+  }else{
+    safeLabel.innerHTML='안전 잔액 <span class="info-tip" id="metricSafeInfo" title="이번달 결제일까지 모든 의무를 처리한 후 남는 금액 (다음달 결제될 카드 사용분 제외)">i</span>';
+    safeSub.textContent='이번달 마감까지 안전';
+  }
+
   // Warning
   const warn=document.getElementById('ahWarning'),warnTxt=document.getElementById('ahWarningText');
   warn.style.background='';warn.style.borderColor='';warnTxt.style.color='';
@@ -1113,7 +1132,8 @@ function renderAll(){
     warnTxt.textContent=`순자산 ${fmtPlain(c.netAsset)} 부족 — 카드 사용을 줄여야 해요.`;
   }else if(c.safetyBalance<0){
     warn.style.display='flex';
-    warnTxt.textContent=`이번달 결제일까지 ${fmtPlain(c.safetyBalance)} 부족.`;
+    const periodText=c.mode==='sustainable'?'다음달':'이번달 결제일까지';
+    warnTxt.textContent=`${periodText} ${fmtPlain(c.safetyBalance)} 부족.`;
   }else if(c.closingBalance<300000&&c.inc>0){
     warn.style.display='flex';
     warnTxt.textContent='이번달 마감 잔액이 얇아요. 다음달 카드 결제 주의.';
