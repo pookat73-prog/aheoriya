@@ -319,26 +319,39 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 .hqs-input{flex:1;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:12px 14px;font-size:18px;outline:none;font-family:"DM Mono",monospace;text-align:right;}
 .hqs-confirm{padding:12px 20px;background:var(--blue);border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:15px;font-weight:600;}
 .hqs-confirm:active{transform:scale(.97);}
-/* 고정지출 추적 */
+/* 고정지출 추적 - 아이콘 그리드 */
 .fixed-exp-section{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:13px 14px;}
-.fes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.fes-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .fes-title{font-size:12px;color:var(--text);font-weight:500;}
-.fes-add-btn{font-size:11px;color:var(--blue);background:transparent;border:1px solid rgba(96,128,240,.3);border-radius:99px;padding:3px 10px;cursor:pointer;}
-.fes-chips{display:flex;flex-direction:column;gap:6px;}
-.fe-chip{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:.15s;}
-.fe-chip:active{transform:scale(.99);}
-.fe-chip-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.fe-chip-name{font-size:12px;color:var(--text);font-weight:500;}
-.fe-chip-nums{font-size:11px;font-family:"DM Mono",monospace;}
-.fe-chip-bar-wrap{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;}
-.fe-chip-bar{height:100%;border-radius:2px;transition:width .4s;}
-.fe-input-row{display:flex;gap:6px;margin-top:8px;align-items:center;}
-.fe-input{flex:1;background:var(--s1);border:1px solid var(--blue);color:var(--text);border-radius:7px;padding:8px 10px;font-size:15px;outline:none;font-family:"DM Mono",monospace;text-align:right;}
-.fe-confirm-btn{padding:8px 14px;background:var(--blue);border:none;color:#fff;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;}
-.fe-confirm-btn:active{transform:scale(.96);}
-.fe-del-btn{width:22px;height:22px;background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:14px;border-radius:4px;padding:0;flex-shrink:0;}
-.fe-del-btn:hover{color:var(--red);}
-.fes-empty{font-size:11px;color:var(--dim);text-align:center;padding:8px 0;line-height:1.7;}
+.fes-gear{font-size:13px;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px 6px;border-radius:6px;}
+.fes-gear:hover{color:var(--text);}
+.fe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.fe-icon{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:10px 4px 8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:.15s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.fe-icon:active{transform:scale(.95);}
+.fe-icon-emoji{font-size:22px;line-height:1;}
+.fe-icon-name{font-size:9px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px;}
+.fe-icon-nums{font-size:10px;font-family:"DM Mono",monospace;color:var(--text);font-weight:500;}
+.fe-icon-bar-wrap{width:100%;height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden;margin-top:2px;}
+.fe-icon-bar{height:100%;border-radius:1px;transition:width .4s;}
+.fes-empty{font-size:11px;color:var(--dim);text-align:center;padding:14px 0;line-height:1.7;grid-column:1/-1;}
+
+/* 고정지출 설정 모달 */
+.fe-mgr-list{display:flex;flex-direction:column;gap:7px;max-height:50vh;overflow-y:auto;margin-bottom:10px;}
+.fe-mgr-item{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:7px 8px;}
+.fe-mgr-emoji{width:34px;height:34px;background:var(--s1);border:1px solid var(--border);border-radius:7px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fe-mgr-name{flex:1;background:transparent;border:none;color:var(--text);font-size:12px;outline:none;min-width:0;font-family:"Noto Sans KR",sans-serif;}
+.fe-mgr-amt{width:62px;background:var(--s1);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 7px;font-size:12px;outline:none;font-family:"DM Mono",monospace;text-align:right;}
+.fe-mgr-eye{width:28px;height:28px;background:transparent;border:none;cursor:pointer;font-size:14px;color:var(--dim);border-radius:6px;padding:0;flex-shrink:0;}
+.fe-mgr-eye.on{color:var(--blue);}
+.fe-mgr-del{width:24px;height:24px;background:transparent;border:none;cursor:pointer;font-size:14px;color:var(--dim);border-radius:6px;padding:0;flex-shrink:0;}
+.fe-mgr-del:hover{color:var(--red);}
+.fe-mgr-add-row{display:flex;gap:6px;align-items:center;background:var(--s2);border:1px dashed var(--border);border-radius:9px;padding:7px 8px;}
+.fe-mgr-add-btn{padding:6px 12px;background:var(--blue);border:none;color:#fff;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500;}
+.fe-type-picker{position:absolute;background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:8px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;z-index:300;box-shadow:0 8px 22px rgba(0,0,0,.4);}
+.fe-type-opt{width:34px;height:34px;font-size:18px;background:var(--s1);border:1px solid var(--border);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.fe-type-opt:hover{background:var(--blue-d);border-color:rgba(96,128,240,.4);}
+.fe-mgr-empty{font-size:11px;color:var(--dim);text-align:center;padding:14px 0;}
+.fe-amt-hint{font-size:9px;color:var(--dim);margin-top:6px;text-align:right;}
 /* 빠른 소비 내역 (카드탭) */
 .quick-items-card{margin-top:0;}
 .qi-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--s2);border-radius:7px;font-size:12px;margin-bottom:4px;}
@@ -383,16 +396,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
         <span style="font-size:9px;color:var(--dim)">카드 한도 기준</span>
       </span>
     </div>
-    <div class="hero-amount" id="heroAmount">₩ 0</div>
+    <div class="hero-amount" id="heroAmount">0만</div>
     <div class="hero-bar-wrap"><div class="hero-bar-fill" id="heroBar" style="width:0;background:var(--blue);"></div></div>
     <div class="hero-info">
       <div class="hero-info-cell">
         <span class="lbl">카드 한도</span>
-        <span class="val" id="heroLimit">₩ 0</span>
+        <span class="val" id="heroLimit">0만</span>
       </div>
       <div class="hero-info-cell">
         <span class="lbl">이미 사용</span>
-        <span class="val" id="heroUsed" style="color:var(--blue);">₩ 0</span>
+        <span class="val" id="heroUsed" style="color:var(--blue);">0만</span>
       </div>
     </div>
     <div class="hero-empty" id="heroEmpty" style="display:none;">
@@ -402,13 +415,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
     <div class="hero-tap-hint">탭해서 소비 차감 ↑</div>
   </div>
 
-  <!-- 고정지출 추적 -->
+  <!-- 고정지출 추적 (아이콘 그리드) -->
   <div class="fixed-exp-section">
     <div class="fes-header">
       <span class="fes-title">📌 고정지출 추적</span>
-      <button class="fes-add-btn" onclick="openFixedExpModal()">+ 항목 추가</button>
+      <button class="fes-gear" onclick="openFeSettings()" title="고정지출 설정">⚙</button>
     </div>
-    <div class="fes-chips" id="fesChips"></div>
+    <div class="fe-grid" id="feGrid"></div>
   </div>
 
   <!-- 카드 한도 산출 상세 -->
@@ -419,30 +432,30 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
     </div>
     <div class="cbb-budget-row">
       <span class="cbb-budget-label">이번달 수입</span>
-      <span class="cbb-budget-val" style="color:var(--green)" id="cbbIncome">₩ 0</span>
+      <span class="cbb-budget-val" style="color:var(--green)" id="cbbIncome">0만</span>
     </div>
     <div class="cbb-budget-row">
       <span class="cbb-budget-label">− 이번달 이체 (즉시+세미)</span>
-      <span class="cbb-budget-val" style="color:var(--red)" id="cbbThisTransfer">₩ 0</span>
+      <span class="cbb-budget-val" style="color:var(--red)" id="cbbThisTransfer">0만</span>
     </div>
     <div class="cbb-budget-row">
       <span class="cbb-budget-label">− 이번달 결제 (지난달 카드분)</span>
-      <span class="cbb-budget-val" style="color:var(--blue)" id="cbbThisCardDue">₩ 0</span>
+      <span class="cbb-budget-val" style="color:var(--blue)" id="cbbThisCardDue">0만</span>
     </div>
     <div class="cbb-budget-row">
       <span class="cbb-budget-label">− 다음달 이체 예상 (안전 버퍼)</span>
-      <span class="cbb-budget-val" style="color:var(--amber)" id="cbbNextTransferBuffer">₩ 0</span>
+      <span class="cbb-budget-val" style="color:var(--amber)" id="cbbNextTransferBuffer">0만</span>
     </div>
     <div class="cbb-budget-row" style="border-top:1px dashed var(--border);padding-top:7px;margin-top:3px;">
       <span class="cbb-budget-label" style="color:var(--text)">= 이번달 카드 한도</span>
-      <span class="cbb-budget-val" style="color:var(--text);font-weight:600" id="cbbLimit">₩ 0</span>
+      <span class="cbb-budget-val" style="color:var(--text);font-weight:600" id="cbbLimit">0만</span>
     </div>
     <div class="cbb-budget-row">
       <span class="cbb-budget-label">이미 사용한 카드 (다음달 결제될 분)</span>
-      <span class="cbb-budget-val" style="color:var(--blue)" id="cbbPlanned">₩ 0</span>
+      <span class="cbb-budget-val" style="color:var(--blue)" id="cbbPlanned">0만</span>
     </div>
     <div style="font-size:10px;color:var(--dim);margin-top:8px;line-height:1.6;">
-      이번달 카드 사용액 <span id="cbbBreakdown" style="color:var(--muted);">(카드지출 ₩0 + 세미고정 ₩0)</span>
+      이번달 카드 사용액 <span id="cbbBreakdown" style="color:var(--muted);">(카드지출 0 + 세미고정 0)</span>
     </div>
   </div>
 
@@ -454,8 +467,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
         <span style="font-size:9px;color:var(--dim)" id="ahHeroHint">전월 마감 자동 이월</span>
       </div>
       <div class="ah-balance-row">
-        <span class="ah-balance-prefix">₩</span>
-        <input class="ah-balance-input" id="balanceInput" type="number" placeholder="0" oninput="updateBalance(this.value)">
+        <input class="ah-balance-input" id="balanceInput" type="number" inputmode="decimal" step="0.1" placeholder="0" oninput="updateBalance(this.value)">
+        <span class="ah-balance-prefix" style="margin-left:6px;">만</span>
       </div>
     </div>
     <div class="override-row">
@@ -465,34 +478,34 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
     <div class="flow-list">
       <div class="flow-row">
         <span class="flow-row-label"><span class="ah-row-dot" style="background:var(--green)"></span>이번달 수입</span>
-        <span class="flow-row-val" style="color:var(--green)" id="flowIncome">+ ₩ 0</span>
+        <span class="flow-row-val" style="color:var(--green)" id="flowIncome">+ 0만</span>
       </div>
       <div class="flow-row">
         <span class="flow-row-label"><span class="ah-row-dot" style="background:var(--red)"></span>이체지출 (즉시)</span>
-        <span class="flow-row-val" style="color:var(--red)" id="flowTransfer">- ₩ 0</span>
+        <span class="flow-row-val" style="color:var(--red)" id="flowTransfer">- 0만</span>
       </div>
       <div class="flow-row">
         <span class="flow-row-label"><span class="ah-row-dot" style="background:var(--amber)"></span>세미고정(이체)</span>
-        <span class="flow-row-val" style="color:var(--amber)" id="flowSemiT">- ₩ 0</span>
+        <span class="flow-row-val" style="color:var(--amber)" id="flowSemiT">- 0만</span>
       </div>
       <div class="flow-row">
         <span class="flow-row-label"><span class="ah-row-dot" style="background:var(--blue)"></span>카드 결제 (지난달 사용분)</span>
-        <span class="flow-row-val" style="color:var(--blue)" id="flowCardDue">- ₩ 0</span>
+        <span class="flow-row-val" style="color:var(--blue)" id="flowCardDue">- 0만</span>
       </div>
       <div class="flow-row divider total">
         <span class="flow-row-label">이번달 마감 잔액 (= 다음달 시작)</span>
-        <span class="flow-row-val" id="flowClosing">₩ 0</span>
+        <span class="flow-row-val" id="flowClosing">0만</span>
       </div>
     </div>
     <div class="metric-grid">
       <div class="metric-cell">
         <div class="metric-cell-label">순자산 <span class="info-tip" title="잔액에서 미결제 카드값 전부와 미결제 이체를 모두 뺀 진짜 내 돈">i</span></div>
-        <div class="metric-cell-val pos" id="metricNet">₩ 0</div>
+        <div class="metric-cell-val pos" id="metricNet">0만</div>
         <div class="metric-cell-sub" id="metricNetSub">모든 의무 갚고 남는 돈</div>
       </div>
       <div class="metric-cell">
         <div class="metric-cell-label">안전 잔액 <span class="info-tip" title="이번달 결제일까지 모든 의무를 처리한 후 남는 금액 (다음달 결제될 카드 사용분 제외)">i</span></div>
-        <div class="metric-cell-val pos" id="metricSafe">₩ 0</div>
+        <div class="metric-cell-val pos" id="metricSafe">0만</div>
         <div class="metric-cell-sub">이번달 마감까지 안전</div>
       </div>
     </div>
@@ -524,13 +537,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
       <span class="legend-pill"><span class="dot" style="background:var(--green)"></span>월별 입력</span>
     </div>
     <div class="card-body">
-      <div class="income-wrap"><div class="inc-iw"><span>₩</span><input class="inc-input" id="incomeInput" type="number" placeholder="0" oninput="updateIncome(this.value)"></div></div>
+      <div class="income-wrap"><div class="inc-iw"><input class="inc-input" id="incomeInput" type="number" inputmode="decimal" step="0.1" placeholder="0" oninput="updateIncome(this.value)"><span style="margin-left:6px;">만</span></div></div>
     </div>
   </div>
   <div class="card">
     <div class="card-head">
       <div class="card-head-left"><div class="card-dot r"></div><span class="card-title">이체지출 <span style="font-size:9px;color:var(--dim);margin-left:4px;">즉시 차감</span></span></div>
-      <span class="card-total" id="transferTotal" style="color:var(--red)">₩ 0</span>
+      <span class="card-total" id="transferTotal" style="color:var(--red)">0만</span>
     </div>
     <div class="card-body" id="transferCatList"></div>
     <div class="edit-cat-row"><button class="edit-cat-btn" onclick="openCatModal('transfer')">카테고리 편집</button></div>
@@ -542,14 +555,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
   <div class="card" id="quickItemsCard" style="display:none;">
     <div class="card-head">
       <div class="card-head-left"><div class="card-dot" style="background:var(--purple)"></div><span class="card-title">빠른 소비 <span style="font-size:9px;color:var(--dim);margin-left:4px;">홈 탭에서 입력한 것</span></span></div>
-      <span class="card-total" id="quickItemsTotal" style="color:var(--purple)">₩ 0</span>
+      <span class="card-total" id="quickItemsTotal" style="color:var(--purple)">0만</span>
     </div>
     <div class="card-body quick-items-card" id="quickItemsList"></div>
   </div>
   <div class="card">
     <div class="card-head">
       <div class="card-head-left"><div class="card-dot b"></div><span class="card-title">카드지출 <span style="font-size:9px;color:var(--dim);margin-left:4px;">다음달 결제</span></span></div>
-      <span class="card-total" id="cardTotal" style="color:var(--blue)">₩ 0</span>
+      <span class="card-total" id="cardTotal" style="color:var(--blue)">0만</span>
     </div>
     <div class="card-body" id="cardCatList"></div>
     <div class="edit-cat-row"><button class="edit-cat-btn" onclick="openCatModal('card')">카테고리 편집</button></div>
@@ -596,8 +609,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
         <input id="setInitMonth" type="month" oninput="updateInitMonth(this.value)">
       </div>
       <div class="settings-row">
-        <label>첫 시작 잔액</label>
-        <input id="setInitBalance" type="number" placeholder="0" oninput="updateInitBalance(this.value)">
+        <label>첫 시작 잔액 (만원)</label>
+        <input id="setInitBalance" type="number" inputmode="decimal" step="0.1" placeholder="0" oninput="updateInitBalance(this.value)">
       </div>
       <div class="settings-help">이 월·잔액부터 모든 월의 이월 잔액이 자동 계산됩니다.</div>
     </div>
@@ -698,7 +711,7 @@ service cloud.firestore {
     </div>
   </div>
   <div class="modal-row">
-    <div class="field"><label>월 금액</label><input id="sAmt" type="number" placeholder="0"></div>
+    <div class="field"><label>월 금액 (만원)</label><input id="sAmt" type="number" inputmode="decimal" step="0.1" placeholder="0"></div>
     <div class="field"><label>시작 월</label><input id="sStart" type="month"></div>
   </div>
   <div class="field"><label>기간 (개월)</label><input id="sDur" type="number" placeholder="12" min="1"></div>
@@ -727,23 +740,45 @@ service cloud.firestore {
 <!-- OVERLAY: 히어로 빠른 차감 -->
 <div class="hero-quick-overlay" id="heroQuickOverlay" onclick="if(event.target===this)closeHeroSheet()">
   <div class="hero-quick-sheet">
-    <div class="hqs-title">소비 금액 입력 (카드 한도에서 차감)</div>
+    <div class="hqs-title">소비 금액 입력 (카드 한도에서 차감) · 만원 단위</div>
     <div class="hqs-row">
-      <input class="hqs-input" id="hqsInput" type="number" inputmode="numeric" placeholder="0" onkeydown="if(event.key==='Enter')heroQuickAdd()">
+      <input class="hqs-input" id="hqsInput" type="number" inputmode="decimal" step="0.1" placeholder="0" onkeydown="if(event.key==='Enter')heroQuickAdd()">
       <button class="hqs-confirm" onclick="heroQuickAdd()">차감</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: 고정지출 추가 -->
-<div class="modal-overlay" id="modalFixedExp" onclick="closeModal('modalFixedExp',event)">
-<div class="modal">
-  <div class="modal-title">고정지출 항목 추가</div>
-  <div class="field"><label>항목명</label><input id="feName" type="text" placeholder="마운자로, 보험료 등"></div>
-  <div class="field"><label>월 한도 금액</label><input id="feAmt" type="number" placeholder="0" inputmode="numeric"></div>
-  <div class="modal-actions">
-    <button class="btn-cancel" onclick="closeModal('modalFixedExp')">취소</button>
-    <button class="btn-confirm" onclick="addFixedExp()">추가</button>
+<!-- OVERLAY: 고정지출 빠른 기록 (히어로와 동일한 시스템) -->
+<div class="hero-quick-overlay" id="feQuickOverlay" onclick="if(event.target===this)closeFeSheet()">
+  <div class="hero-quick-sheet">
+    <div class="hqs-title" id="feqsTitle">기록</div>
+    <div class="hqs-row">
+      <input class="hqs-input" id="feqsInput" type="number" inputmode="decimal" step="0.1" placeholder="0" onkeydown="if(event.key==='Enter')feQuickAdd()">
+      <button class="hqs-confirm" onclick="feQuickAdd()">기록</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px;">
+      <button class="btn-cancel" style="font-size:11px;padding:5px 10px;" onclick="feResetCurrent()">이달 기록 초기화</button>
+      <span id="feqsStatus" style="font-size:11px;color:var(--muted);align-self:center;"></span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: 고정지출 설정 -->
+<div class="modal-overlay" id="modalFeSettings" onclick="closeModal('modalFeSettings',event)">
+<div class="modal" style="max-width:430px;">
+  <div class="modal-title">고정지출 설정</div>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.6;">
+    👁 켜진 항목만 홈에 표시돼요. 금액은 <b>만원 단위</b>로 입력 (예: 32 = 32만원, 32.5 = 32만 5천원)
+  </div>
+  <div class="fe-mgr-list" id="feMgrList"></div>
+  <div class="fe-mgr-add-row">
+    <button class="fe-mgr-emoji" id="feAddEmoji" onclick="openTypePicker(this,'add')">📌</button>
+    <input class="fe-mgr-name" id="feAddName" placeholder="항목명">
+    <input class="fe-mgr-amt" id="feAddAmt" type="number" inputmode="decimal" step="0.1" placeholder="만원">
+    <button class="fe-mgr-add-btn" onclick="addFixedExp()">+ 추가</button>
+  </div>
+  <div class="modal-actions" style="margin-top:12px;">
+    <button class="btn-confirm" onclick="closeModal('modalFeSettings')">완료</button>
   </div>
 </div>
 </div>
@@ -763,7 +798,7 @@ service cloud.firestore {
 // ════════════════════════════════════════════════════════════
 
 // 앱 버전 (sw.js의 CACHE 값과 일치시킬 것)
-const APP_VERSION='v5.7';
+const APP_VERSION='v6.0';
 
 // ── UTILS ──
 const TD=new Date();
@@ -771,10 +806,39 @@ function pad(n){return String(n).padStart(2,'0');}
 function todayYM(){return TD.getFullYear()+'-'+pad(TD.getMonth()+1);}
 function addM(ym,n){const[y,m]=ym.split('-').map(Number);const d=new Date(y,m-1+n,1);return d.getFullYear()+'-'+pad(d.getMonth()+1);}
 function mLabel(ym){const[y,m]=ym.split('-');return y+'년 '+parseInt(m)+'월';}
-function fmt(n){const v=Math.round(n||0);return (v<0?'- ':'')+'₩ '+Math.abs(v).toLocaleString('ko-KR');}
-function fmtPlain(n){return '₩ '+Math.abs(Math.round(n||0)).toLocaleString('ko-KR');}
+// 금액 포맷: 만원 단위 + 천원자리 소숫점 (예: 320000 → "32만", 325000 → "32.5만")
+function fmtMan(n){
+  const abs=Math.abs(Math.round(n||0));
+  if(abs===0)return '0';
+  const man=abs/10000;
+  const rounded=Math.round(man*10)/10;
+  return rounded%1===0?Math.round(rounded).toLocaleString('ko-KR'):rounded.toFixed(1);
+}
+function fmt(n){const v=Math.round(n||0);return (v<0?'- ':'')+fmtMan(v)+'만';}
+function fmtPlain(n){return fmtMan(n)+'만';}
+// 입력값(만 단위) ↔ 원
+function manToWon(s){const v=parseFloat(s);return isNaN(v)?0:Math.round(v*10000);}
+function wonToMan(w){if(!w)return '';const v=w/10000;return v%1===0?String(Math.round(v)):v.toFixed(1);}
 function uid(){return Math.random().toString(36).slice(2,8);}
 function mDiff(a,b){const[ay,am]=a.split('-').map(Number);const[by,bm]=b.split('-').map(Number);return(by-ay)*12+(bm-am);}
+
+// 고정지출 종류 (아이콘)
+const FE_TYPES=[
+  {id:'med',icon:'💊',name:'약/의료'},
+  {id:'food',icon:'🍱',name:'식비'},
+  {id:'cafe',icon:'☕',name:'카페'},
+  {id:'house',icon:'🏠',name:'주거'},
+  {id:'comm',icon:'📱',name:'통신'},
+  {id:'trans',icon:'🚗',name:'교통'},
+  {id:'sub',icon:'📺',name:'구독'},
+  {id:'ins',icon:'🛡️',name:'보험'},
+  {id:'edu',icon:'📚',name:'교육'},
+  {id:'fit',icon:'🏋️',name:'운동'},
+  {id:'pet',icon:'🐾',name:'반려'},
+  {id:'shop',icon:'🛍️',name:'쇼핑'},
+  {id:'etc',icon:'📌',name:'기타'}
+];
+function feIcon(t){const x=FE_TYPES.find(y=>y.id===t);return x?x.icon:'📌';}
 
 // ── DEFAULTS ──
 const DTR=[{id:'c1',name:'주거'},{id:'c2',name:'통신'},{id:'c3',name:'보험'},{id:'c4',name:'교통'},{id:'c5',name:'기타'}];
@@ -1009,16 +1073,16 @@ function renderAll(){
   if(lbl)lbl.textContent=isOverride?'이번달 시작 잔액 (수동 입력)':'이번달 시작 잔액';
   if(hint)hint.textContent=isOverride?'자동 이월 무시':(ym===S.config.initialMonth?'첫 시작 — 직접 입력':'전월 마감 자동 이월');
   if(document.activeElement!==bi){
-    if(isOverride)bi.value=md.balanceOverride||'';
-    else if(ym===S.config.initialMonth)bi.value=S.config.initialBalance||'';
-    else bi.value=c.start||'';
+    if(isOverride)bi.value=wonToMan(md.balanceOverride);
+    else if(ym===S.config.initialMonth)bi.value=wonToMan(S.config.initialBalance);
+    else bi.value=wonToMan(c.start);
   }
   bi.readOnly=!isOverride&&ym!==S.config.initialMonth;
   bi.style.opacity=bi.readOnly?'0.7':'1';
 
   // Flow rows
   const masked=S.config.privacy;
-  document.getElementById('flowIncome').textContent=masked?'+ ₩ ●●●●':'+ '+fmtPlain(c.inc);
+  document.getElementById('flowIncome').textContent=masked?'+ ●●●●만':'+ '+fmtPlain(c.inc);
   // 토글 버튼 모양도 갱신
   const ptog=document.getElementById('privacyToggle');
   if(ptog)ptog.textContent=masked?'👁':'👁‍🗨';
@@ -1061,7 +1125,7 @@ function renderAll(){
   const heroEmpty=document.getElementById('heroEmpty');
   if(c.inc<=0){
     // 수입 미입력 — 안내
-    ha.textContent='₩ —';ha.className='hero-amount neutral';
+    ha.textContent='—';ha.className='hero-amount neutral';
     heroEmpty.style.display='block';
     document.getElementById('heroBar').style.width='0';
   }else{
@@ -1078,7 +1142,7 @@ function renderAll(){
   document.getElementById('heroUsed').textContent=fmtPlain(c.cardUsedThis);
 
   // 한도 산출 상세
-  document.getElementById('cbbIncome').textContent=masked?'₩ ●●●●':fmtPlain(c.inc);
+  document.getElementById('cbbIncome').textContent=masked?'●●●●만':fmtPlain(c.inc);
   document.getElementById('cbbThisTransfer').textContent='- '+fmtPlain(c.totalTransfer);
   document.getElementById('cbbThisCardDue').textContent='- '+fmtPlain(c.cardDueThis);
   document.getElementById('cbbNextTransferBuffer').textContent='- '+fmtPlain(c.estNextTransfer);
@@ -1092,7 +1156,7 @@ function renderAll(){
 
   // Income input
   const ii=document.getElementById('incomeInput');
-  if(document.activeElement!==ii)ii.value=c.inc||'';
+  if(document.activeElement!==ii)ii.value=wonToMan(c.inc);
 
   // Cat totals
   document.getElementById('transferTotal').textContent=fmtPlain(c.totTr);
@@ -1101,7 +1165,7 @@ function renderAll(){
   // Settings
   const sim=document.getElementById('setInitMonth'),sib=document.getElementById('setInitBalance');
   if(sim&&document.activeElement!==sim)sim.value=S.config.initialMonth;
-  if(sib&&document.activeElement!==sib)sib.value=S.config.initialBalance||'';
+  if(sib&&document.activeElement!==sib)sib.value=wonToMan(S.config.initialBalance);
 
   // 모드 라디오 동기화 + 한도 산출 상세에서 보수전용 행 토글
   const mode=S.config.budgetMode||'sustainable';
@@ -1129,10 +1193,10 @@ function renderCatList(type){
       <div class="cat-right">${sub?`<span class="cat-sub">${fmtPlain(sub)}</span>`:''}<span class="cat-tog" id="ctog_${cat.id}">▾</span></div>
     </div>
     <div class="cat-items" id="${bid}" style="display:none">
-      ${catItems.map(it=>`<div class="exp-item"><input class="exp-name" value="${it.name.replace(/"/g,'&quot;')}" onblur="editItem('${type}','${it.id}','name',this.value)" onkeydown="if(event.key==='Enter')this.blur()"><input class="exp-amt" type="number" inputmode="numeric" value="${it.amount}" onblur="editItem('${type}','${it.id}','amount',this.value)" onkeydown="if(event.key==='Enter')this.blur()"><button class="del-btn" onclick="delItem('${type}','${it.id}')">×</button></div>`).join('')}
+      ${catItems.map(it=>`<div class="exp-item"><input class="exp-name" value="${it.name.replace(/"/g,'&quot;')}" onblur="editItem('${type}','${it.id}','name',this.value)" onkeydown="if(event.key==='Enter')this.blur()"><input class="exp-amt" type="number" inputmode="decimal" step="0.1" value="${wonToMan(it.amount)}" onblur="editItem('${type}','${it.id}','amount',this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="만원 단위"><button class="del-btn" onclick="delItem('${type}','${it.id}')">×</button></div>`).join('')}
       <div class="add-row">
         <input class="add-name" id="an_${cat.id}" type="text" placeholder="항목명" onkeydown="if(event.key==='Enter')addItem('${type}','${cat.id}')">
-        <input class="add-amt" id="aa_${cat.id}" type="number" inputmode="numeric" placeholder="금액" onkeydown="if(event.key==='Enter')addItem('${type}','${cat.id}')">
+        <input class="add-amt" id="aa_${cat.id}" type="number" inputmode="decimal" step="0.1" placeholder="만원" onkeydown="if(event.key==='Enter')addItem('${type}','${cat.id}')">
         <button class="add-btn" onclick="addItem('${type}','${cat.id}')">+</button>
       </div>
     </div>`;
@@ -1154,7 +1218,7 @@ function renderSemi(m){
     const div=document.createElement('div');div.className='semi-item'+(isA?'':' inactive');
     div.innerHTML=`<div class="si-top"><input class="si-name" value="${item.name.replace(/"/g,'&quot;')}" onblur="editSemi('${item.id}','name',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
       <div class="si-badges"><span class="si-badge ${item.type==='installment'?'inst':'sav'}">${item.type==='installment'?'할부':'저축'}</span><span class="si-badge ${item.payType==='transfer'?'tr':'cd'}">${item.payType==='transfer'?'이체':'카드'}</span><button class="si-del" onclick="delSemi('${item.id}')">×</button></div></div>
-    <div class="si-mid"><input class="si-amt" type="number" inputmode="numeric" value="${item.amount}" style="color:${barClr}" onblur="editSemi('${item.id}','amount',this.value)" onkeydown="if(event.key==='Enter')this.blur()"><span class="si-per">/ 월</span></div>
+    <div class="si-mid"><input class="si-amt" type="number" inputmode="decimal" step="0.1" value="${wonToMan(item.amount)}" style="color:${barClr}" onblur="editSemi('${item.id}','amount',this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="만원 단위"><span class="si-per">만 / 월</span></div>
     <div class="si-foot"><div class="si-prog"><div class="si-prog-bar" style="width:${pct}%;background:${barClr}"></div></div>
     <span class="si-remain">${isA?`잔여 ${remain}개월`:(m>end?'종료':'시작 전')}</span><span class="si-end">${end.replace('-','.')} 종료</span></div>`;
     body.appendChild(div);
@@ -1193,7 +1257,7 @@ function renderHistory(){
 function changeMonth(d){S.currentMonth=addM(S.currentMonth,d);sv();renderAll();}
 function updateBalance(v){
   const md=getMonth(S.currentMonth);
-  const n=parseInt(v);
+  const n=v===''?NaN:manToWon(v);
   if(S.currentMonth===S.config.initialMonth&&md.balanceOverride==null){
     S.config.initialBalance=isNaN(n)?0:n;
   }else{
@@ -1207,11 +1271,11 @@ function toggleOverride(on){
   else{md.balanceOverride=null;}
   sv();renderAll();
 }
-function updateIncome(v){const md=getMonth(S.currentMonth);md.income=parseInt(v)||0;sv();renderAll();}
+function updateIncome(v){const md=getMonth(S.currentMonth);md.income=manToWon(v);sv();renderAll();}
 function togglePrivacy(){S.config.privacy=!S.config.privacy;sv();renderAll();toast(S.config.privacy?'수입 가림 ON':'수입 가림 OFF');}
 function setBudgetMode(m){S.config.budgetMode=m;sv();renderAll();toast(m==='sustainable'?'안정 모드 적용':'보수 모드 적용');}
 
-// ── 히어로 빠른 차감 ──
+// ── 히어로 빠른 차감 (만원 단위 입력) ──
 function openHeroSheet(){
   const ov=document.getElementById('heroQuickOverlay');
   ov.classList.add('open');
@@ -1223,7 +1287,8 @@ function closeHeroSheet(){
 }
 function heroQuickAdd(){
   const inp=document.getElementById('hqsInput');
-  const amount=parseInt(inp.value)||0;
+  const manVal=parseFloat(inp.value)||0;
+  const amount=Math.round(manVal*10000);
   if(!amount){toast('금액을 입력해주세요');return;}
   const md=getMonth(S.currentMonth);
   md.quickSpend.push({id:uid(),amount,at:Date.now()});
@@ -1231,91 +1296,184 @@ function heroQuickAdd(){
   toast('차감됨 −'+fmtPlain(amount));
 }
 
-// ── 고정지출 추적 ──
-let _feOpen=null; // 현재 입력창 열린 chip id
+// ── 고정지출 추적 (아이콘 그리드 + 바텀시트) ──
+let _feCurrent=null; // 현재 시트로 기록 중인 fe.id
+let _typePickerCtx=null; // 'add' or fe.id
 
-function openFixedExpModal(){
-  document.getElementById('feName').value='';document.getElementById('feAmt').value='';
-  document.getElementById('modalFixedExp').classList.add('open');
-  setTimeout(()=>document.getElementById('feName').focus(),100);
+function openFeSettings(){
+  document.getElementById('feAddName').value='';
+  document.getElementById('feAddAmt').value='';
+  document.getElementById('feAddEmoji').textContent='📌';
+  document.getElementById('feAddEmoji').dataset.type='etc';
+  closeTypePicker();
+  document.getElementById('modalFeSettings').classList.add('open');
+  renderFeSettings();
 }
 function addFixedExp(){
-  const name=document.getElementById('feName').value.trim();
-  const amount=parseInt(document.getElementById('feAmt').value)||0;
+  const name=document.getElementById('feAddName').value.trim();
+  const manVal=parseFloat(document.getElementById('feAddAmt').value)||0;
+  const amount=Math.round(manVal*10000);
+  const type=document.getElementById('feAddEmoji').dataset.type||'etc';
   if(!name||!amount){toast('이름과 금액을 모두 입력해주세요');return;}
   if(!S.config.fixedExpenses)S.config.fixedExpenses=[];
-  S.config.fixedExpenses.push({id:uid(),name,amount});
-  closeModal('modalFixedExp');sv();renderFixedExpenses();toast('추가했어요 ✓');
+  S.config.fixedExpenses.push({id:uid(),name,amount,type,showOnHome:true});
+  document.getElementById('feAddName').value='';
+  document.getElementById('feAddAmt').value='';
+  document.getElementById('feAddEmoji').textContent='📌';
+  document.getElementById('feAddEmoji').dataset.type='etc';
+  sv();renderFeSettings();renderFixedExpenses();toast('추가됨 ✓');
 }
 function delFixedExp(id){
   if(!confirm('이 항목을 삭제할까요? 이번달 기록도 사라져요.'))return;
   S.config.fixedExpenses=S.config.fixedExpenses.filter(x=>x.id!==id);
-  // 모든 월에서 실적 데이터도 제거
   Object.values(S.months).forEach(m=>{if(m.fixedActual)delete m.fixedActual[id];});
-  _feOpen=null;sv();renderFixedExpenses();
+  sv();renderFeSettings();renderFixedExpenses();
 }
-function feChipTap(id){
-  _feOpen=(_feOpen===id)?null:id;
-  renderFixedExpenses();
-  if(_feOpen){
-    setTimeout(()=>{const el=document.getElementById('fe_inp_'+id);if(el)el.focus();},80);
+function editFe(id,field,value){
+  const fe=S.config.fixedExpenses.find(x=>x.id===id);if(!fe)return;
+  if(field==='name'){
+    const v=(value||'').trim();if(!v||v===fe.name)return;
+    fe.name=v;
+  }else if(field==='amount'){
+    const manVal=parseFloat(value)||0;
+    const n=Math.round(manVal*10000);
+    if(n===fe.amount)return;fe.amount=n;
+  }else if(field==='type'){
+    fe.type=value;
+  }else if(field==='showOnHome'){
+    fe.showOnHome=!!value;
   }
+  sv();renderFeSettings();renderFixedExpenses();
 }
-function feRecord(id){
-  const inp=document.getElementById('fe_inp_'+id);
-  const amount=parseInt(inp.value)||0;
-  if(!amount){toast('금액을 입력해주세요');return;}
-  const md=getMonth(S.currentMonth);
-  if(!md.fixedActual)md.fixedActual={};
-  md.fixedActual[id]=(md.fixedActual[id]||0)+amount;
-  const fe=S.config.fixedExpenses.find(x=>x.id===id);
-  const total=md.fixedActual[id];
-  const over=fe&&total>fe.amount;
-  _feOpen=null;sv();renderFixedExpenses();
-  if(over)toast(`⚠ 한도 초과! ${fmtPlain(total-fe.amount)} 초과`);
-  else toast('기록됨 ✓');
-}
-function feReset(id){
-  const md=getMonth(S.currentMonth);
-  if(!md.fixedActual)return;
-  md.fixedActual[id]=0;
-  sv();renderFixedExpenses();
+function toggleFeShow(id){
+  const fe=S.config.fixedExpenses.find(x=>x.id===id);if(!fe)return;
+  fe.showOnHome=!fe.showOnHome;
+  sv();renderFeSettings();renderFixedExpenses();
 }
 
-function renderFixedExpenses(){
-  const el=document.getElementById('fesChips');if(!el)return;
+// 아이콘 종류 선택 팝업
+function openTypePicker(btn,ctx){
+  closeTypePicker();
+  _typePickerCtx=ctx;
+  const pick=document.createElement('div');
+  pick.className='fe-type-picker';pick.id='typePicker';
+  pick.innerHTML=FE_TYPES.map(t=>`<button class="fe-type-opt" title="${t.name}" onclick="pickType('${t.id}')">${t.icon}</button>`).join('');
+  document.body.appendChild(pick);
+  const r=btn.getBoundingClientRect();
+  pick.style.left=Math.max(8,r.left)+'px';
+  pick.style.top=(r.bottom+4)+'px';
+  setTimeout(()=>{
+    document.addEventListener('click',_outsideTypePicker,{capture:true,once:true});
+  },20);
+}
+function _outsideTypePicker(e){
+  const p=document.getElementById('typePicker');
+  if(p&&!p.contains(e.target))closeTypePicker();
+}
+function closeTypePicker(){
+  const p=document.getElementById('typePicker');if(p)p.remove();
+  _typePickerCtx=null;
+}
+function pickType(typeId){
+  if(_typePickerCtx==='add'){
+    const btn=document.getElementById('feAddEmoji');
+    btn.textContent=feIcon(typeId);btn.dataset.type=typeId;
+  }else if(_typePickerCtx){
+    editFe(_typePickerCtx,'type',typeId);
+  }
+  closeTypePicker();
+}
+
+// 고정지출 설정 모달 렌더
+function renderFeSettings(){
+  const el=document.getElementById('feMgrList');if(!el)return;
   if(!S.config.fixedExpenses)S.config.fixedExpenses=[];
   if(!S.config.fixedExpenses.length){
-    el.innerHTML=`<div class="fes-empty">고정지출 항목이 없어요.<br>"+ 항목 추가"로 마운자로, 보험료 등을 등록해보세요.</div>`;
+    el.innerHTML='<div class="fe-mgr-empty">아직 항목이 없어요. 아래에서 추가하세요.</div>';
+    return;
+  }
+  el.innerHTML='';
+  S.config.fixedExpenses.forEach(fe=>{
+    const showOn=fe.showOnHome!==false;
+    const manVal=fe.amount/10000;
+    const manStr=manVal%1===0?Math.round(manVal):manVal.toFixed(1);
+    const div=document.createElement('div');div.className='fe-mgr-item';
+    div.innerHTML=`<button class="fe-mgr-emoji" onclick="openTypePicker(this,'${fe.id}')">${feIcon(fe.type)}</button>
+      <input class="fe-mgr-name" value="${(fe.name||'').replace(/"/g,'&quot;')}" onblur="editFe('${fe.id}','name',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+      <input class="fe-mgr-amt" type="number" inputmode="decimal" step="0.1" value="${manStr}" onblur="editFe('${fe.id}','amount',this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="만원 단위">
+      <button class="fe-mgr-eye ${showOn?'on':''}" onclick="toggleFeShow('${fe.id}')" title="홈 표시 ${showOn?'끔':'켬'}">${showOn?'👁':'⊘'}</button>
+      <button class="fe-mgr-del" onclick="delFixedExp('${fe.id}')">×</button>`;
+    el.appendChild(div);
+  });
+}
+
+// 홈 아이콘 그리드 렌더
+function renderFixedExpenses(){
+  const el=document.getElementById('feGrid');if(!el)return;
+  if(!S.config.fixedExpenses)S.config.fixedExpenses=[];
+  const visible=S.config.fixedExpenses.filter(x=>x.showOnHome!==false);
+  if(!visible.length){
+    el.innerHTML=`<div class="fes-empty">표시할 고정지출이 없어요.<br>⚙ 설정에서 항목을 추가하거나 표시를 켜세요.</div>`;
     return;
   }
   const md=getMonth(S.currentMonth);
   el.innerHTML='';
-  S.config.fixedExpenses.forEach(fe=>{
+  visible.forEach(fe=>{
     const actual=(md.fixedActual&&md.fixedActual[fe.id])||0;
     const pct=fe.amount>0?Math.min(100,actual/fe.amount*100):(actual>0?100:0);
     const over=actual>fe.amount&&fe.amount>0;
     const barClr=over?'var(--red)':pct>=80?'var(--amber)':'var(--green)';
-    const amtColor=over?'color:var(--red)':'';
-    const overAmt=over?` (${fmtPlain(actual-fe.amount)} 초과)`:'';
-    const isOpen=_feOpen===fe.id;
+    const numColor=over?'color:var(--red);':actual>0?'color:var(--blue);':'';
     const div=document.createElement('div');
-    div.className='fe-chip';
-    div.innerHTML=`<div onclick="feChipTap('${fe.id}')">
-      <div class="fe-chip-top">
-        <span class="fe-chip-name">${fe.name}</span>
-        <span class="fe-chip-nums" style="${amtColor}">${fmtPlain(actual)} / ${fmtPlain(fe.amount)}${overAmt}</span>
-      </div>
-      <div class="fe-chip-bar-wrap"><div class="fe-chip-bar" style="width:${pct}%;background:${barClr}"></div></div>
-    </div>
-    ${isOpen?`<div class="fe-input-row">
-      <input class="fe-input" id="fe_inp_${fe.id}" type="number" inputmode="numeric" placeholder="쓴 금액" onkeydown="if(event.key==='Enter')feRecord('${fe.id}')">
-      <button class="fe-confirm-btn" onclick="feRecord('${fe.id}')">기록</button>
-      ${actual>0?`<button class="fe-del-btn" title="이달 기록 초기화" onclick="feReset('${fe.id}')">↺</button>`:''}
-      <button class="fe-del-btn" title="항목 삭제" onclick="delFixedExp('${fe.id}')">×</button>
-    </div>`:''}`;
+    div.className='fe-icon';
+    div.onclick=()=>openFeSheet(fe.id);
+    div.innerHTML=`<span class="fe-icon-emoji">${feIcon(fe.type)}</span>
+      <span class="fe-icon-name">${fe.name}</span>
+      <span class="fe-icon-nums" style="${numColor}">${fmtMan(actual)}/${fmtPlain(fe.amount)}</span>
+      <div class="fe-icon-bar-wrap"><div class="fe-icon-bar" style="width:${pct}%;background:${barClr}"></div></div>`;
     el.appendChild(div);
   });
+}
+
+// 고정지출 빠른 기록 시트 (히어로 동일 스타일)
+function openFeSheet(id){
+  _feCurrent=id;
+  const fe=S.config.fixedExpenses.find(x=>x.id===id);if(!fe)return;
+  const md=getMonth(S.currentMonth);
+  const actual=(md.fixedActual&&md.fixedActual[id])||0;
+  document.getElementById('feqsTitle').textContent=`${feIcon(fe.type)} ${fe.name} · 만원 단위`;
+  document.getElementById('feqsStatus').textContent=`현재 ${fmtPlain(actual)} / 한도 ${fmtPlain(fe.amount)}`;
+  document.getElementById('feqsInput').value='';
+  document.getElementById('feQuickOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('feqsInput').focus(),180);
+}
+function closeFeSheet(){
+  document.getElementById('feQuickOverlay').classList.remove('open');
+  document.getElementById('feqsInput').value='';
+  _feCurrent=null;
+}
+function feQuickAdd(){
+  if(!_feCurrent)return;
+  const inp=document.getElementById('feqsInput');
+  const manVal=parseFloat(inp.value)||0;
+  const amount=Math.round(manVal*10000);
+  if(!amount){toast('금액을 입력해주세요');return;}
+  const md=getMonth(S.currentMonth);
+  if(!md.fixedActual)md.fixedActual={};
+  md.fixedActual[_feCurrent]=(md.fixedActual[_feCurrent]||0)+amount;
+  const fe=S.config.fixedExpenses.find(x=>x.id===_feCurrent);
+  const total=md.fixedActual[_feCurrent];
+  const over=fe&&total>fe.amount;
+  closeFeSheet();sv();renderAll();
+  if(over)toast(`⚠ 한도 초과! ${fmtPlain(total-fe.amount)} 초과`);
+  else toast('기록됨 ✓');
+}
+function feResetCurrent(){
+  if(!_feCurrent)return;
+  if(!confirm('이번달 이 항목 기록을 0으로 초기화할까요?'))return;
+  const md=getMonth(S.currentMonth);
+  if(md.fixedActual)md.fixedActual[_feCurrent]=0;
+  closeFeSheet();sv();renderAll();
 }
 
 // ── 빠른 소비 내역 (카드탭) ──
@@ -1339,7 +1497,7 @@ function renderQuickItems(){
 }
 function addItem(type,catId){
   const n=document.getElementById('an_'+catId),a=document.getElementById('aa_'+catId);
-  const name=n.value.trim(),amount=parseInt(a.value)||0;
+  const name=n.value.trim(),amount=manToWon(a.value);
   if(!name||!amount){toast('이름과 금액을 입력해주세요');return;}
   const md=getMonth(S.currentMonth);
   const list=type==='transfer'?md.transferItems:md.cardItems;
@@ -1363,7 +1521,7 @@ function editItem(type,itemId,field,value){
     if(!v||v===it.name)return;
     it.name=v;
   }else if(field==='amount'){
-    const n=parseInt(value)||0;
+    const n=manToWon(value);
     if(n===it.amount)return;
     it.amount=n;
   }
@@ -1376,7 +1534,7 @@ function editSemi(id,field,value){
     const v=(value||'').trim();if(!v||v===it.name)return;
     it.name=v;
   }else if(field==='amount'){
-    const n=parseInt(value)||0;if(n===it.amount)return;
+    const n=manToWon(value);if(n===it.amount)return;
     it.amount=n;
   }
   sv();renderAll();
@@ -1390,7 +1548,7 @@ function delHist(ym){delete S.history[ym];sv();renderHistory();}
 
 // ── SETTINGS ──
 function updateInitMonth(v){if(!v)return;S.config.initialMonth=v;sv();renderAll();}
-function updateInitBalance(v){S.config.initialBalance=parseInt(v)||0;sv();renderAll();}
+function updateInitBalance(v){S.config.initialBalance=manToWon(v);sv();renderAll();}
 function exportData(){
   const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
@@ -1468,7 +1626,7 @@ function openSemiModal(){
 }
 function addSemi(){
   const name=document.getElementById('sName').value.trim();
-  const amount=parseInt(document.getElementById('sAmt').value)||0;
+  const amount=manToWon(document.getElementById('sAmt').value);
   const startMonth=document.getElementById('sStart').value;
   const dur=parseInt(document.getElementById('sDur').value)||0;
   if(!name||!amount||!startMonth||!dur){toast('모든 항목을 입력해주세요');return;}
