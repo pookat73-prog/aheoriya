@@ -32,12 +32,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
 .header-logo{display:flex;align-items:center;gap:8px;}
 .header-logo img{width:26px;height:26px;border-radius:7px;object-fit:cover;border:1px solid var(--border2);}
 .header-logo span{font-size:12px;color:var(--text);font-weight:500;letter-spacing:.04em;}
-.month-nav{display:flex;align-items:center;gap:5px;}
-.month-btn{width:26px;height:26px;border:none;background:var(--s2);color:var(--muted);border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:.15s;}
+.month-nav{display:flex;align-items:center;gap:8px;}
+.month-btn{width:30px;height:30px;border:none;background:var(--s2);color:var(--muted);border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:.15s;}
 .month-btn:hover{background:var(--s3);color:var(--text);}
-.month-lw{text-align:center;}
-.month-label{font-family:"DM Mono",monospace;font-size:13px;font-weight:500;color:var(--text);display:block;}
-.month-now{font-size:8px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;display:block;line-height:1.6;}
+.month-lw{text-align:center;min-width:96px;padding:2px 8px;border-radius:8px;background:var(--s1);border:1px solid var(--border);}
+.month-label{font-family:"DM Mono",monospace;font-size:18px;font-weight:700;color:var(--text);display:block;letter-spacing:.02em;}
+.month-now{font-size:9px;color:var(--green);letter-spacing:.12em;text-transform:uppercase;display:block;line-height:1.4;font-weight:600;}
 .save-btn{padding:5px 12px;background:var(--s2);border:1px solid var(--border2);color:var(--muted);border-radius:7px;font-size:11px;font-family:"Noto Sans KR",sans-serif;cursor:pointer;transition:.15s;}
 .save-btn.saved{color:var(--green);border-color:rgba(15,212,160,.3);}
 
@@ -493,8 +493,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Noto S
         <span class="flow-row-val" style="color:var(--amber)" id="flowSemiT">- 0만</span>
       </div>
       <div class="flow-row">
-        <span class="flow-row-label"><span class="ah-row-dot" style="background:var(--blue)"></span>카드 결제 (지난달 사용분)</span>
-        <span class="flow-row-val" style="color:var(--blue)" id="flowCardDue">- 0만</span>
+        <span class="flow-row-label"><span class="ah-row-dot" style="background:var(--blue)"></span>지난달 카드값 (이번달 결제)</span>
+        <span class="flow-row-val" style="color:var(--blue);display:flex;align-items:center;gap:4px;">
+          <span style="color:var(--muted);font-weight:400;">-</span>
+          <input class="card-due-input" id="cardDueInput" type="number" inputmode="decimal" step="0.1" placeholder="0" oninput="updateCardDuePaid(this.value)" style="width:64px;text-align:right;background:var(--s2);border:1px solid var(--border);color:var(--blue);font-family:'DM Mono',monospace;font-size:13px;font-weight:600;padding:3px 6px;border-radius:6px;">
+          <span style="color:var(--muted);font-weight:400;font-size:11px;">만</span>
+        </span>
       </div>
       <div class="flow-row divider total">
         <span class="flow-row-label">이번달 마감 잔액 (= 다음달 시작)</span>
@@ -802,7 +806,7 @@ service cloud.firestore {
 // ════════════════════════════════════════════════════════════
 
 // 앱 버전 (sw.js의 CACHE 값과 일치시킬 것)
-const APP_VERSION='v6.2';
+const APP_VERSION='v6.3';
 
 // ── UTILS ──
 const TD=new Date();
@@ -881,12 +885,14 @@ function getMonth(ym){
       cardItems:prev?prev.cardItems.map(i=>({...i,id:uid()})):[],
       quickSpend:[],                 // 히어로 탭 빠른 차감 항목
       fixedActual:{},                // {fixedExpenseId: totalActual} 고정지출 실제 사용액
-      balanceOverride:null
+      balanceOverride:null,
+      cardDuePaid:null               // 지난달 카드값 (이번달 결제) - 매월 직접 입력
     };
   }
   // 기존 데이터에 필드 없으면 보완
   if(!S.months[ym].quickSpend)S.months[ym].quickSpend=[];
   if(!S.months[ym].fixedActual)S.months[ym].fixedActual={};
+  if(S.months[ym].cardDuePaid===undefined)S.months[ym].cardDuePaid=null;
   return S.months[ym];
 }
 
@@ -1001,8 +1007,8 @@ function sumCardItems(ym){const m=S.months[ym];if(!m)return 0;const ci=m.cardIte
 function sumQuickItems(ym){const m=S.months[ym];return m?(m.quickSpend||[]).reduce((a,i)=>a+(i.amount||0),0):0;}
 function semiTransferOf(ym){return activeSemi(ym).filter(x=>x.payType==='transfer').reduce((a,x)=>a+(x.amount||0),0);}
 function semiCardOf(ym){return activeSemi(ym).filter(x=>x.payType==='card').reduce((a,x)=>a+(x.amount||0),0);}
-// 이번달 통장에서 빠지는 카드값 = (M − offset)월 카드 사용분
-function cardDueIn(ym){const use=addM(ym,-S.config.cardBillingOffset);return sumCardItems(use)+semiCardOf(use);}
+// 이번달 통장에서 빠지는 카드값 = 사용자가 월초에 직접 입력 (자동 이월 없음)
+function cardDueIn(ym){const m=S.months[ym];return (m&&m.cardDuePaid!=null)?m.cardDuePaid:0;}
 
 // 시작 잔액 (이월 누적 또는 override)
 function startBalance(ym){
@@ -1092,7 +1098,8 @@ function renderAll(){
   if(ptog)ptog.textContent=masked?'👁':'👁‍🗨';
   document.getElementById('flowTransfer').textContent='- '+fmtPlain(c.totTr);
   document.getElementById('flowSemiT').textContent='- '+fmtPlain(c.semiTr);
-  document.getElementById('flowCardDue').textContent='- '+fmtPlain(c.cardDueThis);
+  const cdi=document.getElementById('cardDueInput');
+  if(cdi&&document.activeElement!==cdi)cdi.value=md.cardDuePaid!=null?wonToMan(md.cardDuePaid):'';
   const fc=document.getElementById('flowClosing');
   fc.textContent=fmt(c.closingBalance);
   fc.style.color=c.closingBalance>=0?'var(--text)':'var(--red)';
@@ -1280,6 +1287,7 @@ function toggleOverride(on){
   sv();renderAll();
 }
 function updateIncome(v){const md=getMonth(S.currentMonth);md.income=manToWon(v);sv();renderAll();}
+function updateCardDuePaid(v){const md=getMonth(S.currentMonth);md.cardDuePaid=v===''?null:manToWon(v);sv();renderAll();}
 function togglePrivacy(){S.config.privacy=!S.config.privacy;sv();renderAll();toast(S.config.privacy?'수입 가림 ON':'수입 가림 OFF');}
 function setBudgetMode(m){S.config.budgetMode=m;sv();renderAll();toast(m==='sustainable'?'안정 모드 적용':'보수 모드 적용');}
 
